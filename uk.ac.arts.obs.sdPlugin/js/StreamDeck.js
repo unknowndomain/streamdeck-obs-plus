@@ -30,7 +30,7 @@ var StreamDeck = {
 			event: event
 		}
 		if (payload) msg.payload = payload
-		StreamDeck._sendWithContext(context, msg);
+		StreamDeck._sendWithContext(context, msg)
 	},
 	sendAlert: (context) => {
 		StreamDeck.send(context, 'showAlert')
@@ -44,8 +44,17 @@ var StreamDeck = {
 			target: target
 		})
 	},
+	getSettings: (context) => {
+		StreamDeck.send(context, 'getSettings')
+	},
 	setSettings: (context, settings) => {
 		StreamDeck.send(context, 'setSettings', settings)
+	},
+	getGlobalSettings: (context) => {
+		StreamDeck.send(context, 'getGlobalSettings')
+	},
+	setGlobalSettings: (context, settings) => {
+		StreamDeck.send(context, 'setGlobalSettings', settings)
 	},
 	setImage: (context, image, target) => {
 		StreamDeck.send(context, 'setImage', {

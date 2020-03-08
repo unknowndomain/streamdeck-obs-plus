@@ -13,15 +13,20 @@ function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) 
 	StreamDeck._ws = new WebSocket("ws://localhost:" + port)
 	StreamDeck._ws.onopen = () => {
 		StreamDeck._openHandler(registerEvent, uuid)
+		StreamDeck.getGlobalSettings(_currentPlugin.context)
 	}
 	StreamDeck._ws.onmessage = (e) => {
 		var data = JSON.parse(e.data)
 		switch(data.event) {
 			case 'sendToPropertyInspector':
 				if (data.payload.scenes) {
+					if (data.payload.settings) updateSettingsUI(data)
 					obsScenes = data.payload.scenes
 					updateSceneUI()
 				}
+				break
+			case 'didReceiveGlobalSettings':
+				updateSettingsUI(data)
 				break
 			default:
 				console.log(data)
@@ -30,9 +35,27 @@ function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) 
 	}
 }
 
+function updateSettingsUI(data) {
+	console.log(data)
+	if (data.payload.settings && Object.keys(data.payload.settings).length > 0) {
+		document.getElementById('host').value = data.payload.settings.host
+		document.getElementById('port').value = data.payload.settings.port
+		document.getElementById('password').value = data.payload.settings.password ? 'password' : ''
+	}
+}
+
+function updateGlobalSettings() {
+	var settings = {
+		host: document.getElementById('host').value,
+		port: document.getElementById('port').value
+	}
+	if (document.getElementById('password').value != 'password') settings.password = document.getElementById('password').value
+	StreamDeck.setGlobalSettings(_currentPlugin.context, settings)
+	StreamDeck.sendToPlugin(_currentPlugin.context, _currentPlugin.action, {updateGlobalSettings: true})
+}
+
 function updateSceneUI() {
 	document.getElementById('scenes').innerText = ''
-	document.getElementById('scenes').onchange = updateSettings
 	createScene('')
 	obsScenes.forEach((scene) => {
 		createScene(scene)
@@ -52,3 +75,8 @@ function updateSettings() {
 	})
 	currentScene = document.getElementById('scenes').value
 }
+
+document.getElementById('host').onchange = updateGlobalSettings
+document.getElementById('port').onchange = updateGlobalSettings
+document.getElementById('password').onchange = updateGlobalSettings
+document.getElementById('scenes').onchange = updateSettings
