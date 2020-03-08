@@ -1,0 +1,40 @@
+{
+	"SDKVersion": 2,
+	"Name": "OBS+",
+	"Description": "Improved OBS actions using OBS web sockets.",
+	"Author": "Tom Lynch",
+	"Version": "0.1",
+	"Icon": "icons/icon",
+	"CodePath": "plugin.html",
+
+	"Category": "OBS+",
+	"CategoryIcon": "icons/icon",
+
+	"Actions": [
+		{
+			"Name": "Scene",
+			"UUID": "uk.ac.arts.obs.scene-btn",
+			"Icon": "icons/scene",
+			"PropertyInspectorPath": "scene-pi.html",
+			"States": [
+				{"Image":"icons/ready"}
+			]
+		},
+		{
+			"Name": "Transition",
+			"UUID": "uk.ac.arts.obs.transition-btn",
+			"Icon": "icons/transition",
+			"PropertyInspectorPath": "transition-pi.html",
+			"States": [
+				{"Image":"icons/black"}
+			]
+		}
+	],
+
+	"OS": [
+		{"Platform": "mac", "MinimumVersion": "10.11"},
+		{"Platform": "windows", "MinimumVersion": "10"}
+	],
+
+	"Software": {"MinimumVersion": "4.1"}
+}
