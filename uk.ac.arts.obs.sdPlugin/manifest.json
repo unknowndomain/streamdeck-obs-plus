@@ -3,7 +3,7 @@
 	"Name": "OBS+",
 	"Description": "Improved OBS actions using OBS web sockets.",
 	"Author": "Tom Lynch",
-	"Version": "0.1",
+	"Version": "0.1.0",
 	"Icon": "icons/icon",
 	"CodePath": "plugin.html",
 
