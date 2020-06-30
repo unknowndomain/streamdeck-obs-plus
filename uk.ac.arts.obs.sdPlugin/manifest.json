@@ -17,7 +17,7 @@
 			"Icon": "icons/scene",
 			"PropertyInspectorPath": "scene-pi.html",
 			"States": [
-				{"Image":"icons/ready"}
+				{"Image":"icons/black"}
 			]
 		},
 		{
