@@ -1,4 +1,4 @@
-var StreamDeck = {
+const StreamDeck = {
 	BOTH: 0,
 	HARDWARE: 1,
 	SOFTWARE: 2,
@@ -26,7 +26,7 @@ var StreamDeck = {
 		})
 	},
 	send: (context, event, payload) => {
-		var msg = {
+		let msg = {
 			event: event
 		}
 		if (payload) msg.payload = payload

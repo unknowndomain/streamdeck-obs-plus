@@ -16,20 +16,20 @@ function printConnectionState() {
 	if (debug) console.log(`connectionState = ${connectionState} (${Object.keys(ConnectionState)[Object.values(ConnectionState).indexOf(connectionState)]})`)
 }
 
-var settings = {
+let settings = {
 	host: 'localhost',
 	port: '4444',
 	password: ''
 }
-var pluginUUID
-var buttons = {}
-var obsScenes = []
-var obsTransitions = []
-var obsStudioMode
-var connectionState = ConnectionState.DISCONNECTED
-var preview
-var program
-var currentPI
+let pluginUUID
+let buttons = {}
+let obsScenes = []
+let obsTransitions = []
+let obsStudioMode
+let connectionState = ConnectionState.DISCONNECTED
+let preview
+let program
+let currentPI
 
 connect()
 function connect() {
@@ -155,19 +155,14 @@ function handleStreamDeckMessages(e) {
 		case 'keyDown':
 			printConnectionState()
 			if (connectionState == ConnectionState.AUTHENTICATED) {
-				console.log('keydown')
 				buttons[data.context].keyDown()
 			} else {
-				if (debug) console.log('keyDown: initating reconnect')
 				connectionState = ConnectionState.DISCONNECTED
 				connect()
 				setTimeout(() => {
-					if (debug) console.log('keyDown: retrying button press')
 					if (connectionState == ConnectionState.AUTHENTICATED) {
-						if (debug) console.log('keyDown: failed - pressed')
 						buttons[data.context].keyDown()
 					} else {
-						if (debug) console.log('keyDown: failed - alerting')
 						StreamDeck.sendAlert(data.context)
 					}
 				}, 10)
@@ -179,7 +174,7 @@ function handleStreamDeckMessages(e) {
 			if (buttons[data.context]) {
 				buttons[data.context].processStreamDeckData(data)
 			} else {
-				var type = ''
+				let type = ''
 				if (data.action == sceneAction) type = 'scene'
 				if (data.action == transitionAction) type = 'transition'
 				if (data.action == projectorAction) type = 'projector'
@@ -230,7 +225,7 @@ function handleGlobalSettingsUpdate(e) {
 }
 
 function handleProgramSceneChanged(e) {
-	var _program = ''
+	let _program = ''
 	if (e['scene-name']) _program = e['scene-name']
 	if (e['name']) _program = e['name']
 
@@ -241,7 +236,7 @@ function handleProgramSceneChanged(e) {
 }
 
 function handlePreviewSceneChanged(e) {
-	var _preview = ''
+	let _preview = ''
 	if (e['scene-name']) _preview = e['scene-name']
 	if (e['name']) _preview = e['name']
 
@@ -296,7 +291,7 @@ function updateButton(context) {
 }
 
 function findButtonsByScene(scene) {
-	var output = []
+	let output = []
 	Object.keys(buttons).forEach((b) => {
 		if (buttons[b].scene && buttons[b].scene == scene) {
 			output.push(b)
@@ -306,7 +301,7 @@ function findButtonsByScene(scene) {
 }
 
 function findPreviewButtons() {
-	var output = []
+	let output = []
 	Object.keys(buttons).forEach((b) => {
 		if (buttons[b].preview && buttons[b].preview == true) {
 			output.push(b)
@@ -316,7 +311,7 @@ function findPreviewButtons() {
 }
 
 function findProgramButtons() {
-	var output = []
+	let output = []
 	Object.keys(buttons).forEach((b) => {
 		if (buttons[b].program && buttons[b].program == true) {
 			output.push(b)

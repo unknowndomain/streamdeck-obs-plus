@@ -1,5 +1,5 @@
-var _currentPlugin
-var currentMonitor
+let _currentPlugin
+let currentMonitor
 
 function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) {
 	data = JSON.parse(action)
@@ -15,7 +15,7 @@ function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) 
 		StreamDeck.getGlobalSettings(_currentPlugin.context)
 	}
 	StreamDeck._ws.onmessage = (e) => {
-		var data = JSON.parse(e.data)
+		const data = JSON.parse(e.data)
 		switch(data.event) {
 			case 'sendToPropertyInspector':
 				if (data.payload.settings) updateSettingsUI(data)
@@ -25,7 +25,7 @@ function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) 
 				updateSettingsUI(data)
 				break
 			default:
-				console.log(data)
+				// console.log(data)
 				break
 		}
 	}
@@ -40,7 +40,7 @@ function updateSettingsUI(data) {
 }
 
 function updateGlobalSettings() {
-	var settings = {
+	let settings = {
 		host: document.getElementById('host').value,
 		port: document.getElementById('port').value
 	}

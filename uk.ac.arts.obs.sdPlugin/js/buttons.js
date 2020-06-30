@@ -1,7 +1,3 @@
-// Button types:
-// scene
-// transition
-
 class Button {
 	constructor(type, data) {
 		this.context = data.context
@@ -60,7 +56,7 @@ class Button {
 		}
 
 		if (obsTransitions.includes(this.transition)) {
-			var msg = {
+			const msg = {
 				'with-transition': {
 					name: this.transition,
 					duration: this.duration

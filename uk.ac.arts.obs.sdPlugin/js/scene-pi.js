@@ -1,6 +1,6 @@
-var _currentPlugin
-var obsScenes
-var currentScene
+let _currentPlugin
+let obsScenes
+let currentScene
 
 function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) {
 	data = JSON.parse(action)
@@ -16,7 +16,7 @@ function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) 
 		StreamDeck.getGlobalSettings(_currentPlugin.context)
 	}
 	StreamDeck._ws.onmessage = (e) => {
-		var data = JSON.parse(e.data)
+		const data = JSON.parse(e.data)
 		switch(data.event) {
 			case 'sendToPropertyInspector':
 				if (data.payload.scenes) {
@@ -29,14 +29,13 @@ function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) 
 				updateSettingsUI(data)
 				break
 			default:
-				console.log(data)
+				// console.log(data)
 				break
 		}
 	}
 }
 
 function updateSettingsUI(data) {
-	console.log(data)
 	if (data.payload.settings && Object.keys(data.payload.settings).length > 0) {
 		document.getElementById('host').value = data.payload.settings.host
 		document.getElementById('port').value = data.payload.settings.port
@@ -45,7 +44,7 @@ function updateSettingsUI(data) {
 }
 
 function updateGlobalSettings() {
-	var settings = {
+	let settings = {
 		host: document.getElementById('host').value,
 		port: document.getElementById('port').value
 	}
@@ -64,7 +63,7 @@ function updateSceneUI() {
 }
 
 function createScene(scene) {
-	var option = document.createElement('option')
+	const option = document.createElement('option')
 	option.innerText = scene
 	document.getElementById('scenes').appendChild(option)
 }
