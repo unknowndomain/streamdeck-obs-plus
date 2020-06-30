@@ -2,6 +2,7 @@ const obs = new OBSWebSocket()
 const sceneAction = 'uk.ac.arts.obs.scene-btn'
 const transitionAction = 'uk.ac.arts.obs.transition-btn'
 const debug = false
+const projectorAction = 'uk.ac.arts.obs.projector-btn'
 
 const ConnectionState = {
 	FAILED: -2,
@@ -179,6 +180,7 @@ function handleStreamDeckMessages(e) {
 				var type = ''
 				if (data.action == sceneAction) type = 'scene'
 				if (data.action == transitionAction) type = 'transition'
+				if (data.action == projectorAction) type = 'projector'
 				buttons[data.context] = new Button(type, data)
 				if (type == 'scene') updateButton(data.context)
 			}

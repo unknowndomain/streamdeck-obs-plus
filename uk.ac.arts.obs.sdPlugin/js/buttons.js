@@ -22,6 +22,11 @@ class Button {
 			this._updateTitle()
 			StreamDeck.setImage(this.context, blackImg, StreamDeck.HARDWARE)
 		}
+		if (this.type == 'projector') {
+			this.monitor = parseInt(data.payload.settings.monitor) ? parseInt(data.payload.settings.monitor) : 0
+			StreamDeck.setTitle(this.context, 'Multiview', StreamDeck.BOTH)
+			StreamDeck.setImage(this.context, blackImg, StreamDeck.HARDWARE)
+		}
 	}
 
 	keyDown() {
@@ -31,6 +36,9 @@ class Button {
 				break
 			case 'transition':
 				this._transition()
+				break
+			case 'projector':
+				this._projector()
 				break
 		}
 	}
@@ -62,6 +70,13 @@ class Button {
 		} else {
 			StreamDeck.sendAlert(this.context)
 		}
+	}
+
+	_projector() {
+		obs.send('OpenProjector', {
+			type: 'multiview',
+			monitor: this.monitor
+		})
 	}
 
 	_updateTitle() {

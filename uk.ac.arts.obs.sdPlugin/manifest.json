@@ -1,9 +1,9 @@
 {
 	"SDKVersion": 2,
 	"Name": "OBS+",
-	"Description": "Improved OBS actions using OBS web sockets.",
+	"Description": "Improved OBS actions using OBS WebSockets.",
 	"Author": "Tom Lynch",
-	"Version": "0.1.1",
+	"Version": "0.1.2",
 	"Icon": "icons/icon",
 	"CodePath": "plugin.html",
 
@@ -25,6 +25,15 @@
 			"UUID": "uk.ac.arts.obs.transition-btn",
 			"Icon": "icons/transition",
 			"PropertyInspectorPath": "transition-pi.html",
+			"States": [
+				{"Image":"icons/black"}
+			]
+		},
+		{
+			"Name": "Projector",
+			"UUID": "uk.ac.arts.obs.projector-btn",
+			"Icon": "icons/projector",
+			"PropertyInspectorPath": "projector-pi.html",
 			"States": [
 				{"Image":"icons/black"}
 			]
