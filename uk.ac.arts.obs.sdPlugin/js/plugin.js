@@ -21,6 +21,7 @@ var preview
 var program
 var currentPI
 var reconnectTimer
+var studioMode
 
 setInterval(connect, 1000)
 
@@ -104,6 +105,7 @@ obs.on('ScenesChanged', obsUpdateScenes)
 obs.on('TransitionListChanged', obsUpdateTransitions)
 obs.on('PreviewSceneChanged', handlePreviewSceneChanged)
 obs.on('SwitchScenes', handleProgramSceneChanged)
+obs.on('StudioModeSwitched', handleStudioModeSwitched)
 
 function obsUpdateScenes() {
 	obs.send('GetSceneList').then((data) => {
@@ -113,7 +115,14 @@ function obsUpdateScenes() {
 		if (currentPI) sendUpdatedScenesToPI()
 		handleProgramSceneChanged({name: data['current-scene']})
 	})
-	obs.send('GetPreviewScene').then(handlePreviewSceneChanged)
+	if (studioMode) obs.send('GetPreviewScene').then(handlePreviewSceneChanged)
+}
+
+
+function obsUpdateStudioStatus() {
+	obs.send('GetStudioModeStatus').then((data) => {
+		studioMode = data['studio-mode']
+	})
 }
 
 function obsUpdateTransitions() {
@@ -225,6 +234,10 @@ function handlePreviewSceneChanged(e) {
 		preview = _preview
 		updateButtons()
 	}
+}
+
+function handleStudioModeSwitched(e) {
+	studioMode = e['new-state']
 }
 
 function clearProgramButtons() {
