@@ -40,8 +40,8 @@ class Button {
 	}
 
 	_setScene() {
-		if (obsScenes.includes(this.scene)) {
-			obs.send(obsStudioMode ? 'SetPreviewScene' : 'SetCurrentScene', {
+		if (OBS.scenes.includes(this.scene)) {
+			obs.send(OBS.studioMode ? 'SetPreviewScene' : 'SetCurrentScene', {
 				'scene-name': this.scene
 			})
 		} else {
@@ -50,12 +50,12 @@ class Button {
 	}
 
 	_transition() {
-		if (!obsStudioMode) {
+		if (!OBS.studioMode) {
 			StreamDeck.sendAlert(this.context)
 			return
 		}
 
-		if (obsTransitions.includes(this.transition)) {
+		if (OBS.transitions.includes(this.transition)) {
 			const msg = {
 				'with-transition': {
 					name: this.transition,

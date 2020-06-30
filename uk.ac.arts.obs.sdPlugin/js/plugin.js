@@ -22,14 +22,17 @@ let settings = {
 	password: ''
 }
 let pluginUUID
-let buttons = {}
-let obsScenes = []
-let obsTransitions = []
-let obsStudioMode
 let connectionState = ConnectionState.DISCONNECTED
-let preview
-let program
 let currentPI
+let buttons = {}
+
+let OBS = {
+	scenes: [],
+	transitions: [],
+	studioMode: null,
+	preview: '',
+	program: ''
+}
 
 connect()
 function connect() {
@@ -67,8 +70,8 @@ obs.on('ConnectionClosed', () => {
 	if (connectionState == ConnectionState.FAILED) return
 	connectionState = ConnectionState.DISCONNECTED
 	printConnectionState()
-	obsScenes = []
-	obsTransitions = []
+	OBS.scenes = []
+	OBS.transitions = []
 	clearPreviewButtons()
 	clearProgramButtons()
 	setButtonsOffline()
@@ -100,25 +103,25 @@ obs.on('Exiting', () => {
 
 function obsUpdateScenes() {
 	obs.send('GetSceneList').then((data) => {
-		obsScenes = data.scenes.map((s) => {
+		OBS.scenes = data.scenes.map((s) => {
 			return s.name
 		})
 		if (currentPI) sendUpdatedScenesToPI()
 		handleProgramSceneChanged({name: data['current-scene']})
 	})
-	if (obsStudioMode) obs.send('GetPreviewScene').then(handlePreviewSceneChanged)
+	if (OBS.studioMode) obs.send('GetPreviewScene').then(handlePreviewSceneChanged)
 }
 
 
 function obsUpdateStudioStatus() {
 	obs.send('GetStudioModeStatus').then((data) => {
-		obsStudioMode = data['studio-mode']
+		OBS.studioMode = data['studio-mode']
 	})
 }
 
 function obsUpdateTransitions() {
 	obs.send('GetTransitionList').then((data) => {
-		obsTransitions = data.transitions.map((s) => {
+		OBS.transitions = data.transitions.map((s) => {
 			return s.name
 		})
 		if (currentPI && currentPI.action == transitionAction) sendUpdatedTransitionsToPI()
@@ -135,13 +138,13 @@ function updatePI(e) {
 
 function sendUpdatedScenesToPI() {
 	StreamDeck.sendToPI(currentPI.context, sceneAction, {
-		scenes: obsScenes
+		scenes: OBS.scenes
 	})
 }
 
 function sendUpdatedTransitionsToPI() {
 	StreamDeck.sendToPI(currentPI.context, transitionAction, {
-		transitions: obsTransitions
+		transitions: OBS.transitions
 	})
 }
 
@@ -229,8 +232,8 @@ function handleProgramSceneChanged(e) {
 	if (e['scene-name']) _program = e['scene-name']
 	if (e['name']) _program = e['name']
 
-	if (_program != program) {
-		program = _program
+	if (_program != OBS.program) {
+		OBS.program = _program
 		updateButtons()
 	}
 }
@@ -240,14 +243,14 @@ function handlePreviewSceneChanged(e) {
 	if (e['scene-name']) _preview = e['scene-name']
 	if (e['name']) _preview = e['name']
 
-	if (_preview != preview) {
-		preview = _preview
+	if (_preview != OBS.preview) {
+		OBS.preview = _preview
 		updateButtons()
 	}
 }
 
 function handleStudioModeSwitched(e) {
-	obsStudioMode = e['new-state']
+	OBS.studioMode = e['new-state']
 }
 
 function clearProgramButtons() {
@@ -262,28 +265,28 @@ function clearPreviewButtons() {
 }
 
 function updateProgramButtons() {
-	findButtonsByScene(program).forEach((b) => {
+	findButtonsByScene(OBS.program).forEach((b) => {
 		buttons[b].setProgram()
 	})
 }
 
 function updatePreviewButtons() {
-	findButtonsByScene(preview).forEach((b) => {
+	findButtonsByScene(OBS.preview).forEach((b) => {
 		buttons[b].setPreview()
 	})
 }
 
 function updateButtons(mode) {
 	clearPreviewButtons()
-	if (preview != program) updatePreviewButtons()
+	if (OBS.preview != OBS.program) updatePreviewButtons()
 	clearProgramButtons()
 	updateProgramButtons()
 }
 
 function updateButton(context) {
-	if (buttons[context].scene == program) {
+	if (buttons[context].scene == OBS.program) {
 		buttons[context].setProgram()
-	} else if (buttons[context].scene == preview) {
+	} else if (buttons[context].scene == OBS.preview) {
 		buttons[context].setPreview()
 	} else {
 		buttons[context].setOffAir()
