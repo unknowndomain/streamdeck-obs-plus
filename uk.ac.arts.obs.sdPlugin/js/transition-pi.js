@@ -11,7 +11,7 @@ function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) 
 		action: data.action,
 		context: uuid
 	}
-	StreamDeck.debug = true
+	// StreamDeck.debug = true
 	StreamDeck._ws = new WebSocket("ws://localhost:" + port)
 	StreamDeck._ws.onopen = () => {
 		StreamDeck._openHandler(registerEvent, uuid)
