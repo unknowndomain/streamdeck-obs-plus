@@ -3,6 +3,7 @@
 	"Name": "OBS+",
 	"Description": "Improved OBS actions using OBS WebSockets.",
 	"Author": "Tom Lynch",
+	"URL": "https://github.com/unknowndomain/streamdeck-obs-plus",
 	"Version": "0.1.3",
 	"Icon": "icons/icon",
 	"CodePath": "plugin.html",
