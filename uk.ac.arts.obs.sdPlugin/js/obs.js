@@ -1,3 +1,0 @@
-let obs = class {
-	constructor
-}

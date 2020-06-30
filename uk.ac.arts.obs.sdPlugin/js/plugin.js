@@ -3,107 +3,97 @@ const sceneAction = 'uk.ac.arts.obs.scene-btn'
 const transitionAction = 'uk.ac.arts.obs.transition-btn'
 const debug = false
 
-const CLOSED = -4
-const FAILED = -3
-const GETTING_SETTINGS = -2
-const DISCONNECTED = -1
-const CONNECTING = 0
-const CONNECTED = 1
-const AUTHENTICATED = 2
+const ConnectionState = {
+	FAILED: -2,
+	DISCONNECTED: -1,
+	CONNECTING: 0,
+	CONNECTED: 1,
+	AUTHENTICATED: 2
+}
 
+function printConnectionState() {
+	if (debug) console.log(`connectionState = ${connectionState} (${Object.keys(ConnectionState)[Object.values(ConnectionState).indexOf(connectionState)]})`)
+}
+
+var settings = {
+	host: 'localhost',
+	port: '4444',
+	password: ''
+}
 var pluginUUID
-var settings
 var buttons = {}
 var obsScenes = []
 var obsTransitions = []
-var connectionState = DISCONNECTED
+var connectionState = ConnectionState.DISCONNECTED
 var preview
 var program
 var currentPI
-var reconnectTimer
+var studioMode
 
-setInterval(connect, 1000)
-
+connect()
 function connect() {
 	switch (connectionState) {
-		case CLOSED:
-			if (debug) console.log('CLOSED: check again')
-			if (!reconnectTimer) reconnectTimer = setTimeout(() => {
-				if (connectionState == CLOSED) {
-					connectionState = DISCONNECTED
-					reconnectTimer = null
-				}
-			}, 5000)
-		break
-		case FAILED:
+		case ConnectionState.FAILED:
 			if (debug) console.log('FAILED: will not connect')
 			break
-		case GETTING_SETTINGS:
-			if (debug) console.log('GETTING SETTINGS: waiting')
-			if (settings && Object.keys(settings).length == 0) {
-				settings = {
-					host: 'localhost',
-					port: 4444,
-					password: ''
-				}
-				StreamDeck.setGlobalSettings(pluginUUID, settings)
-				if (currentPI) StreamDeck.sendToPI(currentPI.context, transitionAction, {settings: settings})
-			}
-			connectionState = DISCONNECTED
-		case DISCONNECTED:
+		case ConnectionState.DISCONNECTED:
 			if (debug) console.log('DISCONNECTED: will try to connect')
-			if (settings && Object.keys(settings).length > 0) {
-				obs.connect({
-					address: `${settings.host}:${settings.port}`,
-					password: settings.password
-				})
-			} else {
-				connectionState = GETTING_SETTINGS
-				StreamDeck.getGlobalSettings(pluginUUID)
-			}
+			obs.connect({
+				address: `${settings.host}:${settings.port}`,
+				password: settings.password
+			})
 			break
-		case CONNECTING:
+		case ConnectionState.CONNECTING:
 			if (debug) console.log('CONNECTING: nothing to do')
 			break
-		case CONNECTED:
+		case ConnectionState.CONNECTED:
 			if (debug) console.log('CONNECTED: nothing to do')
 			break
-		case AUTHENTICATED:
+		case ConnectionState.AUTHENTICATED:
 			if (debug) console.log('AUTHENTICATED: nothing to do')
 			break
+		default:
+			obs.disconnect()
+			ConnectionState.DISCONNECTED
 	}
 }
 
 obs.on('ConnectionOpened', () => {
-	if (debug) console.log('connectionState = CONNECTED')
-	connectionState = CONNECTED
+	connectionState = ConnectionState.CONNECTED
+	printConnectionState()
 })
-
 obs.on('ConnectionClosed', () => {
-	if (connectionState == FAILED) return
-	if (debug) console.log('connectionState = CLOSED')
-	connectionState = CLOSED
+	if (connectionState == ConnectionState.FAILED) return
+	connectionState = ConnectionState.DISCONNECTED
+	printConnectionState()
 	obsScenes = []
 	obsTransitions = []
 	clearPreviewButtons()
 	clearProgramButtons()
 })
-obs.on('AuthenticationSuccess', (e) => {
-	if (debug) console.log('connectionState = AUTHENTICATED')
-	connectionState = AUTHENTICATED
+obs.on('AuthenticationSuccess', () => {
+	connectionState = ConnectionState.AUTHENTICATED
+	printConnectionState()
+	obsUpdateStudioStatus()
 	obsUpdateScenes()
 	obsUpdateTransitions()
 	updateButtons()
 })
-obs.on('AuthenticationFailure', (e) => {
-	if (debug) console.log('connectionState = FAILED')
-	connectionState = FAILED
+obs.on('AuthenticationFailure', () => {
+	connectionState = ConnectionState.FAILED
+	printConnectionState()
 })
 
 obs.on('ScenesChanged', obsUpdateScenes)
 obs.on('TransitionListChanged', obsUpdateTransitions)
 obs.on('PreviewSceneChanged', handlePreviewSceneChanged)
 obs.on('SwitchScenes', handleProgramSceneChanged)
+obs.on('StudioModeSwitched', handleStudioModeSwitched)
+
+obs.on('Exiting', () => {
+	obs.disconnect()
+	console.log('OBS Disconnecting')
+})
 
 function obsUpdateScenes() {
 	obs.send('GetSceneList').then((data) => {
@@ -113,7 +103,14 @@ function obsUpdateScenes() {
 		if (currentPI) sendUpdatedScenesToPI()
 		handleProgramSceneChanged({name: data['current-scene']})
 	})
-	obs.send('GetPreviewScene').then(handlePreviewSceneChanged)
+	if (studioMode) obs.send('GetPreviewScene').then(handlePreviewSceneChanged)
+}
+
+
+function obsUpdateStudioStatus() {
+	obs.send('GetStudioModeStatus').then((data) => {
+		studioMode = data['studio-mode']
+	})
 }
 
 function obsUpdateTransitions() {
@@ -126,6 +123,7 @@ function obsUpdateTransitions() {
 }
 
 function updatePI(e) {
+	if (connectionState != ConnectionState.AUTHENTICATED) connect()
 	currentPI = {
 		context: e.context,
 		action: e.action
@@ -145,10 +143,32 @@ function sendUpdatedTransitionsToPI() {
 }
 
 function handleStreamDeckMessages(e) {
-	var data = JSON.parse(e.data)
+	const data = JSON.parse(e.data)
+	// if (debug) console.log(`${data.event}: `, data)
 	switch(data.event) {
+		case 'deviceDidConnect':
+			StreamDeck.getGlobalSettings(pluginUUID)
+			break
 		case 'keyDown':
-			buttons[data.context].keyDown()
+			printConnectionState()
+			if (connectionState == ConnectionState.AUTHENTICATED) {
+				console.log('keydown')
+				buttons[data.context].keyDown()
+			} else {
+				if (debug) console.log('keyDown: initating reconnect')
+				connectionState = ConnectionState.DISCONNECTED
+				connect()
+				setTimeout(() => {
+					if (debug) console.log('keyDown: retrying button press')
+					if (connectionState == ConnectionState.AUTHENTICATED) {
+						if (debug) console.log('keyDown: failed - pressed')
+						buttons[data.context].keyDown()
+					} else {
+						if (debug) console.log('keyDown: failed - alerting')
+						StreamDeck.sendAlert(data.context)
+					}
+				}, 10)
+			}
 			break
 		case 'willAppear':
 		case 'titleParametersDidChange':
@@ -177,7 +197,6 @@ function handleStreamDeckMessages(e) {
 		case 'sendToPlugin':
 			if (data.payload.updateGlobalSettings) {
 				StreamDeck.getGlobalSettings(pluginUUID)
-				connectionState = DISCONNECTED
 			}
 		default:
 			if (debug) console.log('Unhandled event:', data)
@@ -198,10 +217,11 @@ function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info) {
 }
 
 function handleGlobalSettingsUpdate(e) {
-	settings = e.payload.settings
-	if (connectionState > CONNECTING) {
+	if (Object.keys(e.payload.settings).length != 0) settings = e.payload.settings
+	if (connectionState > ConnectionState.CONNECTING) {
 		obs.disconnect()
-		connectionState = DISCONNECTED
+		connectionState = ConnectionState.DISCONNECTED
+		connect()
 	}
 }
 
@@ -225,6 +245,10 @@ function handlePreviewSceneChanged(e) {
 		preview = _preview
 		updateButtons()
 	}
+}
+
+function handleStudioModeSwitched(e) {
+	studioMode = e['new-state']
 }
 
 function clearProgramButtons() {
