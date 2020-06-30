@@ -58,7 +58,6 @@ class Button {
 					duration: this.duration
 				}
 			}
-			console.log(msg)
 			obs.send('TransitionToProgram', msg)
 		} else {
 			StreamDeck.sendAlert(this.context)
