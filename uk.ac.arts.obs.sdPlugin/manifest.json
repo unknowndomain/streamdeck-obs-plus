@@ -31,7 +31,7 @@
 			]
 		},
 		{
-			"Name": "Projector",
+			"Name": "Multiview Projector",
 			"UUID": "uk.ac.arts.obs.projector-btn",
 			"Icon": "icons/projector",
 			"PropertyInspectorPath": "projector-pi.html",
