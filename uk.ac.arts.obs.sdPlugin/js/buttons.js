@@ -27,7 +27,7 @@ class Button {
 	keyDown() {
 		switch (this.type) {
 			case 'scene':
-				this.setScene()
+				this._setScene()
 				break
 			case 'transition':
 				this._transition()
@@ -35,9 +35,9 @@ class Button {
 		}
 	}
 
-	setScene() {
+	_setScene() {
 		if (obsScenes.includes(this.scene)) {
-			obs.send('SetPreviewScene', {
+			obs.send(studioMode ? 'SetPreviewScene' : 'SetCurrentScene', {
 				'scene-name': this.scene
 			})
 		} else {
@@ -46,6 +46,11 @@ class Button {
 	}
 
 	_transition() {
+		if (!studioMode) {
+			StreamDeck.sendAlert(this.context)
+			return
+		}
+
 		if (obsTransitions.includes(this.transition)) {
 			var msg = {
 				'with-transition': {
