@@ -9,10 +9,3 @@ The features are:
 
 NOTE: This plugin requires [obs-websocket](https://github.com/Palakis/obs-websocket) to work.
 
-KNOWN ISSUES:
-
-1. Connection/reconnection isn't very intelligent at the moment this causes issues on Windows where it doesn't reconnect and on macOS that it disconnects randomly.
-
-2. If you are not in studio mode the scene buttons don't work.
-
-3. The Plugin Inspector (settings) are slow to load.
