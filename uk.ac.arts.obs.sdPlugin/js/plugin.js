@@ -24,11 +24,11 @@ var pluginUUID
 var buttons = {}
 var obsScenes = []
 var obsTransitions = []
+var obsStudioMode
 var connectionState = ConnectionState.DISCONNECTED
 var preview
 var program
 var currentPI
-var studioMode
 
 connect()
 function connect() {
@@ -103,13 +103,13 @@ function obsUpdateScenes() {
 		if (currentPI) sendUpdatedScenesToPI()
 		handleProgramSceneChanged({name: data['current-scene']})
 	})
-	if (studioMode) obs.send('GetPreviewScene').then(handlePreviewSceneChanged)
+	if (obsStudioMode) obs.send('GetPreviewScene').then(handlePreviewSceneChanged)
 }
 
 
 function obsUpdateStudioStatus() {
 	obs.send('GetStudioModeStatus').then((data) => {
-		studioMode = data['studio-mode']
+		obsStudioMode = data['studio-mode']
 	})
 }
 
@@ -248,7 +248,7 @@ function handlePreviewSceneChanged(e) {
 }
 
 function handleStudioModeSwitched(e) {
-	studioMode = e['new-state']
+	obsStudioMode = e['new-state']
 }
 
 function clearProgramButtons() {

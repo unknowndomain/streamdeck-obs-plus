@@ -37,7 +37,7 @@ class Button {
 
 	_setScene() {
 		if (obsScenes.includes(this.scene)) {
-			obs.send(studioMode ? 'SetPreviewScene' : 'SetCurrentScene', {
+			obs.send(obsStudioMode ? 'SetPreviewScene' : 'SetCurrentScene', {
 				'scene-name': this.scene
 			})
 		} else {
@@ -46,7 +46,7 @@ class Button {
 	}
 
 	_transition() {
-		if (!studioMode) {
+		if (!obsStudioMode) {
 			StreamDeck.sendAlert(this.context)
 			return
 		}
