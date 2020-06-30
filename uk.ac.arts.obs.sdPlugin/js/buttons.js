@@ -20,12 +20,12 @@ class Button {
 			this.transition = data.payload.settings.transition
 			this.duration = parseInt(data.payload.settings.duration) ? parseInt(data.payload.settings.duration) : 100
 			this._updateTitle()
-			StreamDeck.setImage(this.context, blueImg, StreamDeck.BOTH)
+			this.setOnline()
 		}
 		if (this.type == 'projector') {
 			this.monitor = parseInt(data.payload.settings.monitor) ? parseInt(data.payload.settings.monitor) : 0
 			StreamDeck.setTitle(this.context, 'Multiview', StreamDeck.BOTH)
-			StreamDeck.setImage(this.context, blueImg, StreamDeck.BOTH)
+			this.setOnline()
 		}
 	}
 
@@ -87,7 +87,7 @@ class Button {
 		if (this.type == 'scene' && !this.preview) {
 			this.preview = true
 			this.program = false
-			StreamDeck.setImage(this.context, previewImg, StreamDeck.BOTH)
+			this.setOnline()
 		}
 	}
 
@@ -95,7 +95,7 @@ class Button {
 		if (this.type == 'scene' && !this.program) {
 			this.program = true
 			this.preview = false
-			StreamDeck.setImage(this.context, programImg, StreamDeck.BOTH)
+			this.setOnline()
 		}
 	}
 
@@ -103,7 +103,32 @@ class Button {
 		if (this.type == 'scene') {
 			this.program = false
 			this.preview = false
-			StreamDeck.setImage(this.context, readyImg, StreamDeck.BOTH)
+			this.setOnline()
 		}
+	}
+
+	setOnline() {
+		switch (this.type) {
+			case 'scene':
+				if (this.program) {
+					StreamDeck.setImage(this.context, programImg, StreamDeck.BOTH)
+				} else if (this.preview) {
+					StreamDeck.setImage(this.context, previewImg, StreamDeck.BOTH)
+				} else {
+					StreamDeck.setImage(this.context, readyImg, StreamDeck.BOTH)
+				}
+				break
+			case 'transition':
+			case 'projector':
+				StreamDeck.setImage(this.context, blueImg, StreamDeck.BOTH)
+				break
+			default:
+				StreamDeck.setImage(this.context, blackImg, StreamDeck.BOTH)
+				break
+		}
+	}
+
+	setOffline() {
+		StreamDeck.setImage(this.context, blackImg, StreamDeck.BOTH)
 	}
 }

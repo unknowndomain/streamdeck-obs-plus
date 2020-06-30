@@ -71,6 +71,7 @@ obs.on('ConnectionClosed', () => {
 	obsTransitions = []
 	clearPreviewButtons()
 	clearProgramButtons()
+	setButtonsOffline()
 })
 obs.on('AuthenticationSuccess', () => {
 	connectionState = ConnectionState.AUTHENTICATED
@@ -79,6 +80,7 @@ obs.on('AuthenticationSuccess', () => {
 	obsUpdateScenes()
 	obsUpdateTransitions()
 	updateButtons()
+	setButtonsOnline()
 })
 obs.on('AuthenticationFailure', () => {
 	connectionState = ConnectionState.FAILED
@@ -321,4 +323,16 @@ function findProgramButtons() {
 		}
 	})
 	return output
+}
+
+function setButtonsOffline() {
+	Object.values(buttons).forEach((b) => {
+		b.setOffline()
+	})
+}
+
+function setButtonsOnline() {
+	Object.values(buttons).forEach((b) => {
+		b.setOnline()
+	})
 }
