@@ -1,7 +1,8 @@
+const debug = false
+
 const obs = new OBSWebSocket()
 const sceneAction = 'uk.ac.arts.obs.scene-btn'
 const transitionAction = 'uk.ac.arts.obs.transition-btn'
-const debug = false
 const projectorAction = 'uk.ac.arts.obs.projector-btn'
 
 const ConnectionState = {
