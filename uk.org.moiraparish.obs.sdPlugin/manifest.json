@@ -1,0 +1,32 @@
+{
+	"SDKVersion": 2,
+	"Name": "OBS-Moira",
+	"Description": "Moira Parish Streamdeck Plugins.",
+	"Author": "John O'Connor",
+	"URL": "https://github.com/jcoconnor/streamdeck-obs-plus",
+	"Version": "0.1.4",
+	"Icon": "icons/icon",
+	"CodePath": "plugin.html",
+
+	"Category": "OBS-Moira",
+	"CategoryIcon": "icons/category",
+
+	"Actions": [
+		{
+			"Name": "Scene",
+			"UUID": "uk.org.moiraparish.obs.scene-btn",
+			"Icon": "icons/scene",
+			"PropertyInspectorPath": "scene-pi.html",
+			"States": [
+				{"Image":"icons/scene"}
+			]
+		}
+	],
+
+	"OS": [
+		{"Platform": "mac", "MinimumVersion": "10.12"},
+		{"Platform": "windows", "MinimumVersion": "10"}
+	],
+
+	"Software": {"MinimumVersion": "4.1"}
+}
