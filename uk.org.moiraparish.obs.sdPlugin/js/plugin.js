@@ -1,5 +1,5 @@
-const debug = false
-
+const debug = true
+// 
 const obs = new OBSWebSocket()
 const sceneAction = 'uk.org.moiraparish.obs.scene-btn'
 
@@ -93,6 +93,9 @@ obs.on('ScenesChanged', obsUpdateScenes)
 obs.on('PreviewSceneChanged', handlePreviewSceneChanged)
 obs.on('SwitchScenes', handleProgramSceneChanged)
 obs.on('StudioModeSwitched', handleStudioModeSwitched)
+obs.on('SourceCreated', obsUpdateSources)
+obs.on('SourceDestroyed', obsUpdateSources)
+obs.on('SourceRenamed', obsUpdateSources)
 
 obs.on('Exiting', () => {
 	obs.disconnect()
@@ -114,6 +117,7 @@ function obsUpdateScenes() {
 function obsUpdateSources() {
 	obs.send('GetSourcesList').then((data) => {
 		OBS.sources = data.sources.map((s) => {
+			// Maybe filter on video sources only ? - or just leave all?
 			return s.name
 		})
 	})
@@ -143,7 +147,7 @@ function sendUpdatedScenesToPI() {
 
 function handleStreamDeckMessages(e) {
 	const data = JSON.parse(e.data)
-	// if (debug) console.log(`${data.event}: `, data)
+	if (debug) console.log(`${data.event}: `, data)
 	switch(data.event) {
 		case 'deviceDidConnect':
 			StreamDeck.getGlobalSettings(pluginUUID)
