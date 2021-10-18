@@ -140,7 +140,8 @@ function updatePI(e) {
 
 function sendUpdatedScenesToPI() {
 	StreamDeck.sendToPI(currentPI.context, sceneAction, {
-		scenes: OBS.scenes
+		scenes: OBS.scenes,
+		sources: OBS.sources
 	})
 }
 

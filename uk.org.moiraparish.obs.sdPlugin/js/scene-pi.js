@@ -1,10 +1,13 @@
 let _currentPlugin
 let obsScenes
+let obsSources
 let currentScene
+let currentSource
 
 function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) {
 	data = JSON.parse(action)
 	currentScene = data.payload.settings.scene
+	currentSource = data.payload.settings.source
 	_currentPlugin = {
 		action: data.action,
 		context: uuid
@@ -22,14 +25,16 @@ function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) 
 				if (data.payload.scenes) {
 					if (data.payload.settings) updateSettingsUI(data)
 					obsScenes = data.payload.scenes
-					obsSources = data.payload.sources
 					updateSceneUI()
+				}
+				if (data.payload.sources) {
+					if (data.payload.settings) updateSettingsUI(data)
+					obsSources = data.payload.sources
 					updateSourceUI()
 				}
 				break
 			case 'didReceiveGlobalSettings':
 				updateSettingsUI(data)
-				// updateSources(data) 
 				break
 			default:
 				console.log(data)
@@ -71,7 +76,6 @@ function createScene(scene) {
 	document.getElementById('scenes').appendChild(option)
 }
 
-
 function updateSourceUI() {
 	document.getElementById('sources').innerText = ''
 	createSource('')
@@ -87,25 +91,17 @@ function createSource(source) {
 	document.getElementById('sources').appendChild(option)
 }
 
-
 function updateSettings() {
 	StreamDeck.setSettings(_currentPlugin.context, {
-		scene: document.getElementById('scenes').value
-	})
-	currentScene = document.getElementById('scenes').value
-}
-
-function updateSources() {
-	StreamDeck.setSettings(_currentPlugin.context, {
+		scene: document.getElementById('scenes').value,
 		source: document.getElementById('sources').value
 	})
+	currentScene = document.getElementById('scenes').value
 	currentSource = document.getElementById('sources').value
 }
-
-
 
 document.getElementById('host').onchange = updateGlobalSettings
 document.getElementById('port').onchange = updateGlobalSettings
 document.getElementById('password').onchange = updateGlobalSettings
 document.getElementById('scenes').onchange = updateSettings
-document.getElementById('sources').onchange = updateSources
+document.getElementById('sources').onchange = updateSettings
