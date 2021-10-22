@@ -3,11 +3,15 @@ let obsScenes
 let obsSources
 let currentScene
 let currentSource
+let currentPreset
+let currentIpAddress
 
 function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) {
 	data = JSON.parse(action)
 	currentScene = data.payload.settings.scene
 	currentSource = data.payload.settings.source
+	currentPreset = data.payload.settings.preset
+	currentIpAddress = data.payload.settings.ipaddress
 	_currentPlugin = {
 		action: data.action,
 		context: uuid
@@ -22,15 +26,20 @@ function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) 
 		const data = JSON.parse(e.data)
 		switch(data.event) {
 			case 'sendToPropertyInspector':
+				if (data.payload.settings) updateSettingsUI(data)
 				if (data.payload.scenes) {
-					if (data.payload.settings) updateSettingsUI(data)
 					obsScenes = data.payload.scenes
 					updateSceneUI()
 				}
 				if (data.payload.sources) {
-					if (data.payload.settings) updateSettingsUI(data)
 					obsSources = data.payload.sources
 					updateSourceUI()
+				}
+				if(data.payload.preset) {
+					updateCameraSettingsPreset(data.payload.preset)
+				}
+				if(data.payload.ipaddress) {
+					updateCameraSettingsIpAddress(data.payload.ipaddress)
 				}
 				break
 			case 'didReceiveGlobalSettings':
@@ -94,10 +103,23 @@ function createSource(source) {
 function updateSettings() {
 	StreamDeck.setSettings(_currentPlugin.context, {
 		scene: document.getElementById('scenes').value,
-		source: document.getElementById('sources').value
+		source: document.getElementById('sources').value,
+		ipaddress: document.getElementById('ipaddress').value,
+		preset: document.getElementById('preset').value
 	})
+	StreamDeck.sendToPlugin(_currentPlugin.context, _currentPlugin.action, {updateSettings: true})
 	currentScene = document.getElementById('scenes').value
 	currentSource = document.getElementById('sources').value
+	currentPreset = document.getElementById('preset').value
+	currentIpAddress = document.getElementById('ipaddress').value
+}
+
+function updateCameraSettingsIpAddress(ipaddress) {
+	document.getElementById('ipaddress').value = ipaddress
+}
+function updateCameraSettingsPreset(preset) {
+	document.getElementById('preset').value = preset
+
 }
 
 document.getElementById('host').onchange = updateGlobalSettings
@@ -105,3 +127,6 @@ document.getElementById('port').onchange = updateGlobalSettings
 document.getElementById('password').onchange = updateGlobalSettings
 document.getElementById('scenes').onchange = updateSettings
 document.getElementById('sources').onchange = updateSettings
+document.getElementById('preset').onchange = updateSettings
+document.getElementById('ipaddress').onchange = updateSettings
+

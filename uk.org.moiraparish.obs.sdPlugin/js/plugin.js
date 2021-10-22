@@ -20,6 +20,11 @@ let settings = {
 	port: '4444',
 	password: ''
 }
+let camerasettings = {
+	preset: '1',
+	ipaddress: '0.0.0.0'
+}
+
 let pluginUUID
 let connectionState = ConnectionState.DISCONNECTED
 let currentPI
@@ -120,6 +125,7 @@ function obsUpdateSources() {
 			// Maybe filter on video sources only ? - or just leave all?
 			return s.name
 		})
+		if (currentPI) sendUpdatedSourcesToPI()
 	})
 }
 
@@ -140,8 +146,20 @@ function updatePI(e) {
 
 function sendUpdatedScenesToPI() {
 	StreamDeck.sendToPI(currentPI.context, sceneAction, {
-		scenes: OBS.scenes,
+		scenes: OBS.scenes
+	})
+}
+
+function sendUpdatedSourcesToPI() {
+	StreamDeck.sendToPI(currentPI.context, sceneAction, {
 		sources: OBS.sources
+	})
+}
+
+function sendUpdatedCamSettingsToPI() {
+	StreamDeck.sendToPI(currentPI.context, sceneAction, {
+		ipaddress: camerasettings.ipaddress,
+		preset: camerasettings.preset
 	})
 }
 
@@ -157,6 +175,7 @@ function handleStreamDeckMessages(e) {
 			printConnectionState()
 			if (connectionState == ConnectionState.AUTHENTICATED) {
 				buttons[data.context].keyDown()
+				setCameraPreset()
 			} else {
 				connectionState = ConnectionState.DISCONNECTED
 				connect()
@@ -187,6 +206,8 @@ function handleStreamDeckMessages(e) {
 		case 'propertyInspectorDidAppear':
 			updatePI(data)
 			sendUpdatedScenesToPI()
+			sendUpdatedSourcesToPI()
+			sendUpdatedCamSettingsToPI()
 			break
 		case 'didReceiveGlobalSettings':
 			handleGlobalSettingsUpdate(data)
@@ -194,6 +215,9 @@ function handleStreamDeckMessages(e) {
 		case 'sendToPlugin':
 			if (data.payload.updateGlobalSettings) {
 				StreamDeck.getGlobalSettings(pluginUUID)
+			}
+			if (data.payload.updateSettings) {
+				StreamDeck.getSettings(pluginUUID)
 			}
 		default:
 			if (debug) console.log('Unhandled event:', data)
@@ -328,4 +352,9 @@ function setButtonsOnline() {
 	Object.values(buttons).forEach((b) => {
 		b.setOnline()
 	})
+}
+
+function setCameraPreset () {
+// Camera Preset actions here.
+
 }
