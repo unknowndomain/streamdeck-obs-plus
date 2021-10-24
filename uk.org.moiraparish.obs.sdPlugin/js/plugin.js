@@ -20,10 +20,6 @@ let settings = {
 	port: '4444',
 	password: ''
 }
-let camerasettings = {
-	preset: '1',
-	ipaddress: '0.0.0.0'
-}
 
 let pluginUUID
 let connectionState = ConnectionState.DISCONNECTED
@@ -33,6 +29,8 @@ let buttons = {}
 let OBS = {
 	scenes: [],
 	sources: [],
+	preset: '1',
+	ipaddress: '0.0.0.0',
 	studioMode: null,
 	preview: '',
 	program: ''
@@ -86,6 +84,7 @@ obs.on('AuthenticationSuccess', () => {
 	obsUpdateStudioStatus()
 	obsUpdateScenes()
 	obsUpdateSources()
+	updateCameraSettings()
 	updateButtons()
 	setButtonsOnline()
 })
@@ -129,6 +128,9 @@ function obsUpdateSources() {
 	})
 }
 
+function updateCameraSettings() {
+	if (currentPI) sendUpdatedCamSettingsToPI()
+}
 
 function obsUpdateStudioStatus() {
 	obs.send('GetStudioModeStatus').then((data) => {
@@ -158,8 +160,8 @@ function sendUpdatedSourcesToPI() {
 
 function sendUpdatedCamSettingsToPI() {
 	StreamDeck.sendToPI(currentPI.context, sceneAction, {
-		ipaddress: camerasettings.ipaddress,
-		preset: camerasettings.preset
+		ipaddress: OBS.ipaddress,
+		preset: OBS.preset
 	})
 }
 
@@ -182,6 +184,7 @@ function handleStreamDeckMessages(e) {
 				setTimeout(() => {
 					if (connectionState == ConnectionState.AUTHENTICATED) {
 						buttons[data.context].keyDown()
+						setCameraPreset()
 					} else {
 						StreamDeck.sendAlert(data.context)
 					}
@@ -216,9 +219,6 @@ function handleStreamDeckMessages(e) {
 			if (data.payload.updateGlobalSettings) {
 				StreamDeck.getGlobalSettings(pluginUUID)
 			}
-			if (data.payload.updateSettings) {
-				StreamDeck.getSettings(pluginUUID)
-			}
 		default:
 			if (debug) console.log('Unhandled event:', data)
 			break
@@ -245,6 +245,7 @@ function handleGlobalSettingsUpdate(e) {
 		connect()
 	}
 }
+
 
 function handleProgramSceneChanged(e) {
 	let _program = ''
@@ -312,6 +313,7 @@ function updateButton(context) {
 	}
 }
 
+
 function findButtonsByScene(scene) {
 	let output = []
 	Object.keys(buttons).forEach((b) => {
@@ -356,5 +358,7 @@ function setButtonsOnline() {
 
 function setCameraPreset () {
 // Camera Preset actions here.
+console.log('Setting Camera Preset:')
+
 
 }

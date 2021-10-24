@@ -6,10 +6,16 @@ class Button {
 	}
 
 	processStreamDeckData(data) {
-		if (this.type == 'scene' && data.payload.settings.scene) {
-			this.scene = data.payload.settings.scene
-			this.program = false
-			this.preview = false
+		if (this.type == 'scene' ) {
+			if (data.payload.settings.scene) {
+				this.scene = data.payload.settings.scene
+				this.program = false
+				this.preview = false
+			}
+			if (data.payload.settings.source) this.source = data.payload.settings.source
+			if (data.payload.settings.preset) this.preset = data.payload.settings.preset
+			if (data.payload.settings.ipaddress) this.ipaddress = data.payload.settings.ipaddress
+			console.log('Processed this data:', data)
 			this._updateTitle()
 		}
 	}

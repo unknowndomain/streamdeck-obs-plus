@@ -36,10 +36,10 @@ function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) 
 					updateSourceUI()
 				}
 				if(data.payload.preset) {
-					updateCameraSettingsPreset(data.payload.preset)
+					updateCameraSettingsPreset()
 				}
 				if(data.payload.ipaddress) {
-					updateCameraSettingsIpAddress(data.payload.ipaddress)
+					updateCameraSettingsIpAddress()
 				}
 				break
 			case 'didReceiveGlobalSettings':
@@ -107,19 +107,18 @@ function updateSettings() {
 		ipaddress: document.getElementById('ipaddress').value,
 		preset: document.getElementById('preset').value
 	})
-	StreamDeck.sendToPlugin(_currentPlugin.context, _currentPlugin.action, {updateSettings: true})
 	currentScene = document.getElementById('scenes').value
 	currentSource = document.getElementById('sources').value
 	currentPreset = document.getElementById('preset').value
 	currentIpAddress = document.getElementById('ipaddress').value
 }
 
-function updateCameraSettingsIpAddress(ipaddress) {
-	document.getElementById('ipaddress').value = ipaddress
+function updateCameraSettingsIpAddress() {
+	document.getElementById('ipaddress').value = currentIpAddress
 }
-function updateCameraSettingsPreset(preset) {
-	document.getElementById('preset').value = preset
 
+function updateCameraSettingsPreset() {
+	document.getElementById('preset').value = currentPreset
 }
 
 document.getElementById('host').onchange = updateGlobalSettings
