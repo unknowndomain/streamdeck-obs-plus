@@ -177,14 +177,12 @@ function handleStreamDeckMessages(e) {
 			printConnectionState()
 			if (connectionState == ConnectionState.AUTHENTICATED) {
 				buttons[data.context].keyDown()
-				setCameraPreset()
 			} else {
 				connectionState = ConnectionState.DISCONNECTED
 				connect()
 				setTimeout(() => {
 					if (connectionState == ConnectionState.AUTHENTICATED) {
 						buttons[data.context].keyDown()
-						setCameraPreset()
 					} else {
 						StreamDeck.sendAlert(data.context)
 					}
@@ -356,9 +354,3 @@ function setButtonsOnline() {
 	})
 }
 
-function setCameraPreset () {
-// Camera Preset actions here.
-console.log('Setting Camera Preset:')
-
-
-}
