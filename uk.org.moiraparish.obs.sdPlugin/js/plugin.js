@@ -33,7 +33,9 @@ let OBS = {
 	ipaddress: '0.0.0.0',
 	studioMode: null,
 	preview: '',
-	program: ''
+	program: '',
+	program_sources: [],
+	preview_sources: []
 }
 
 connect()
@@ -252,6 +254,7 @@ function handleProgramSceneChanged(e) {
 
 	if (_program != OBS.program) {
 		OBS.program = _program
+		// TODO Populate Sources for this Program Scene
 		updateButtons()
 	}
 }
@@ -263,6 +266,7 @@ function handlePreviewSceneChanged(e) {
 
 	if (_preview != OBS.preview) {
 		OBS.preview = _preview
+		// TODO Populate Sources for this Program Scene
 		updateButtons()
 	}
 }

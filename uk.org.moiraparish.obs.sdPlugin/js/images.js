@@ -26,3 +26,13 @@ const ctx = canvas.getContext('2d')
 	ctx.fillStyle = '#3f3f3f'
 	ctx.fillRect(0, 0, 144, 15)
 	const readyImg = canvas.toDataURL()
+
+	// Source Preview button
+	ctx.fillStyle = '#00ff00'
+	ctx.fillRect(0, 300, 144, 15)
+	const srcpreviewImg = canvas.toDataURL()
+
+	// Source Program button
+	ctx.fillStyle = '#ff0000'
+	ctx.fillRect(0, 300, 144, 15)
+	const srcprogramImg = canvas.toDataURL()
