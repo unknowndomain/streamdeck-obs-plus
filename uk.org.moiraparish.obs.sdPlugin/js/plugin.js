@@ -313,6 +313,8 @@ function updateButton(context) {
 	} else {
 		buttons[context].setOffAir()
 	}
+	// TODO Now to check for Source side matches - and accordingly.
+	// 
 }
 
 
