@@ -248,13 +248,23 @@ function handleGlobalSettingsUpdate(e) {
 
 
 function handleProgramSceneChanged(e) {
+	console.log("Program change", e)
+	console.log("Program change", OBS)
 	let _program = ''
 	if (e['scene-name']) _program = e['scene-name']
 	if (e['name']) _program = e['name']
 
 	if (_program != OBS.program) {
 		OBS.program = _program
-		// TODO Populate Sources for this Program Scene
+		// Save the program sources
+		if (e['sources'])  {
+			src = e['sources']
+			OBS.program_sources = src.map((s) => {
+				console.log("Source", s)
+				return s.name
+			})
+		}
+		console.log("Program Scene Change - Updated OBS to", OBS)
 		updateButtons()
 	}
 }
@@ -266,7 +276,15 @@ function handlePreviewSceneChanged(e) {
 
 	if (_preview != OBS.preview) {
 		OBS.preview = _preview
-		// TODO Populate Sources for this Program Scene
+		// Save the program sources
+		if (e['sources'])  {
+			src = e['sources']
+			OBS.preview_sources = src.map((s) => {
+				console.log("Source", s)
+				return s.name
+			})
+		}
+		console.log("Preview Scene Change - Updated OBS to", OBS)
 		updateButtons()
 	}
 }
