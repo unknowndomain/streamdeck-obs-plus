@@ -248,8 +248,6 @@ function handleGlobalSettingsUpdate(e) {
 
 
 function handleProgramSceneChanged(e) {
-	console.log("Program change", e)
-	console.log("Program change", OBS)
 	let _program = ''
 	if (e['scene-name']) _program = e['scene-name']
 	if (e['name']) _program = e['name']
@@ -276,7 +274,7 @@ function handlePreviewSceneChanged(e) {
 
 	if (_preview != OBS.preview) {
 		OBS.preview = _preview
-		// Save the program sources
+		// Save the preview sources
 		if (e['sources'])  {
 			src = e['sources']
 			OBS.preview_sources = src.map((s) => {
