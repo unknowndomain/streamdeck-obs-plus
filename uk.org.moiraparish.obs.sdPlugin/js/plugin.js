@@ -114,7 +114,7 @@ function obsUpdateScenes() {
 			return s.name
 		})
 		if (currentPI) sendUpdatedScenesToPI()
-		handleProgramSceneChanged({name: data['current-scene']})
+		obs.send('GetCurrentScene').then(handleProgramSceneChanged)
 	})
 	if (OBS.studioMode) obs.send('GetPreviewScene').then(handlePreviewSceneChanged)
 }
@@ -248,6 +248,7 @@ function handleGlobalSettingsUpdate(e) {
 
 
 function handleProgramSceneChanged(e) {
+	console.log("Just before Program Scene Change - OBS is", e)
 	let _program = ''
 	if (e['scene-name']) _program = e['scene-name']
 	if (e['name']) _program = e['name']
@@ -258,7 +259,6 @@ function handleProgramSceneChanged(e) {
 		if (e['sources'])  {
 			src = e['sources']
 			OBS.program_sources = src.map((s) => {
-				console.log("Source", s)
 				return s.name
 			})
 		}
@@ -268,6 +268,7 @@ function handleProgramSceneChanged(e) {
 }
 
 function handlePreviewSceneChanged(e) {
+	console.log("Just before Preview Scene Change - OBS is", OBS)
 	let _preview = ''
 	if (e['scene-name']) _preview = e['scene-name']
 	if (e['name']) _preview = e['name']
@@ -278,7 +279,6 @@ function handlePreviewSceneChanged(e) {
 		if (e['sources'])  {
 			src = e['sources']
 			OBS.preview_sources = src.map((s) => {
-				console.log("Source", s)
 				return s.name
 			})
 		}
@@ -303,7 +303,7 @@ function clearPreviewButtons() {
 }
 
 function updateProgramButtons() {
-	console.log("Updating Program Buttons")
+	console.log("Updating Program Buttons", OBS)
 	findButtonsByScene(OBS.program).forEach((b) => {
 		buttons[b].setProgram()
 	})
@@ -313,7 +313,7 @@ function updateProgramButtons() {
 }
 
 function updatePreviewButtons() {
-	console.log("Updating Preview Buttons")
+	console.log("Updating Preview Buttons", OBS)
 	findButtonsByScene(OBS.preview).forEach(b => {
 		buttons[b].setPreview()
 	})
