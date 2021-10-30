@@ -24,13 +24,15 @@ class Button {
 	keyDown() {
 		switch (this.type) {
 			case 'scene':
-				// Test to see if in preview or if we are live.
-				// Preview Actions
-				this._setScene()
-				this._setCameraPreset()
-				// Live Actions
-
-				// Already Live
+				if (this.preview) {
+					console.log("Starting Scene transition to program")
+					obs.send('TransitionToProgram')
+				} else if (!this.program && !this.source_program) {
+					this._setCameraPreset()
+					this._setScene()
+				} else {
+					// Alert warning...
+				}
 				break
 		}
 	}
