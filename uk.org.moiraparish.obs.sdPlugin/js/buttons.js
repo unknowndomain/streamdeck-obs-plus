@@ -6,16 +6,13 @@ class Button {
 	}
 
 	processStreamDeckData(data) {
-		if (this.type == 'scene' ) {
+		if (this.type == 'scene') {
 			console.log("Processing Streamdeck Payload", data)
-			if (data.payload.settings.scene) {
-				this.scene = data.payload.settings.scene
-				this.soure = data.payload.settings.source
-				this.program = false
-				this.preview = false
-				this.source_program = false
-				this.source_preview = false
-			}
+			this.program = false
+			this.preview = false
+			this.source_program = false
+			this.source_preview = false
+			if (data.payload.settings.scene) this.scene = data.payload.settings.scene
 			if (data.payload.settings.source) this.source = data.payload.settings.source
 			if (data.payload.settings.preset) this.preset = data.payload.settings.preset
 			if (data.payload.settings.ipaddress) this.ipaddress = data.payload.settings.ipaddress
@@ -55,8 +52,9 @@ class Button {
 
 	setPreview() {
 		if (this.type == 'scene' && !this.preview) {
-			this.preview = true
 			this.program = false
+			this.preview = true
+			console.log("setPreview", this)
 			this.setOnline()
 		}
 	}
@@ -65,14 +63,16 @@ class Button {
 		if (this.type == 'scene' && !this.program) {
 			this.program = true
 			this.preview = false
+			console.log("setProgram", this)
 			this.setOnline()
 		}
 	}
 
 	setSourcePreview() {
 		if (this.type == 'scene' && !this.source_preview) {
-			this.source_preview = true
 			this.source_program = false
+			this.source_preview = true
+			console.log("setSourcePreview", this)
 			this.setOnline()
 		}
 	}
@@ -81,7 +81,8 @@ class Button {
 		if (this.type == 'scene' && !this.source_program) {
 			this.source_program = true
 			this.source_preview = false
-			this.setsrcOnline()
+			console.log("setSourceProgram", this)
+			this.setOnline()
 		}
 	}
 
@@ -89,55 +90,56 @@ class Button {
 		if (this.type == 'scene') {
 			this.program = false
 			this.preview = false
-			this.setsrcOnline()
+			this.source_program = false
+			this.source_preview = false
+			console.log("Setting OFF AIR", this)
+			this.setOffline()
 		}
 	}
 
 	setOnline() {
+		console.log("setOnline", this)
 		switch (this.type) {
 			case 'scene':
 				if (this.program) {
-					StreamDeck.setImage(this.context, programImg, StreamDeck.BOTH)
+					ctx.fillStyle = red
 				} else if (this.preview) {
-					StreamDeck.setImage(this.context, previewImg, StreamDeck.BOTH)
+					ctx.fillStyle = green
 				} else {
-					StreamDeck.setImage(this.context, readyImg, StreamDeck.BOTH)
+					ctx.fillStyle = grey
 				}
-				break
-			default:
-				StreamDeck.setImage(this.context, blackImg, StreamDeck.BOTH)
-				break
-		}
-	}
-
-
-	setsrcOnline() {
-		switch (this.type) {
-			case 'scene':
+				ctx.fillRect(rectangle_x, rectangle_y, rectangle_width, rectangle_height)
 				if (this.source_program) {
-					StreamDeck.setImage(this.context, srcprogramImg, StreamDeck.BOTH)
+					ctx.fillStyle = red
 				} else if (this.source_preview) {
-					StreamDeck.setImage(this.context, srcpreviewImg, StreamDeck.BOTH)
+					ctx.fillStyle = green
 				} else {
-					StreamDeck.setImage(this.context, readyImg, StreamDeck.BOTH)
-					// StreamDeck.setImage(this.context, srcreadyImg, StreamDeck.BOTH)
+					ctx.fillStyle = grey
 				}
+				ctx.fillRect(rectangle_x, src_rectangle_y, rectangle_width, rectangle_height)
+				StreamDeck.setImage(this.context, canvas.toDataURL(), StreamDeck.BOTH)
 				break
 			default:
-				StreamDeck.setImage(this.context, srcblackImg, StreamDeck.BOTH)
+				console.log("Setting blackimage for main", this)
+				this.setOffline()
 				break
 		}
 	}
 
 	setOffline() {
-		StreamDeck.setImage(this.context, blackImg, StreamDeck.BOTH)
+		console.log("Setting Off Line", this)
+		ctx.fillStyle = black
+		ctx.fillRect(rectangle_x, rectangle_y, rectangle_width, rectangle_height)
+		ctx.fillRect(rectangle_x, src_rectangle_y, rectangle_width, rectangle_height)
+		StreamDeck.setImage(this.context, canvas.toDataURL(), StreamDeck.BOTH)
 	}
-	_setCameraPreset () {
+
+	_setCameraPreset() {
 		// Camera Preset actions here.
-		console.log('Setting Camera Preset:','hhh','hhhh')
-		
+		console.log('Setting Camera Preset:', 'hhh', 'hhhh')
+
 		// http://[Camera IP]/cgi-bin/ptzctrl.cgi?ptzcmd&poscall&[Position Number]
-		
-		}
-		
+
+	}
+
 }

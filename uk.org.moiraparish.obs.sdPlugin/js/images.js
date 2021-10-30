@@ -8,6 +8,12 @@ const rectangle_x = 0
 const rectangle_y = 0
 const src_rectangle_y = 129
 
+const red = '#ff0000'
+const green = '#00ff00'
+const blue = '#00007f'
+const grey = '#3f3f3f'
+const black = '#000000'
+
 // Blue button
 ctx.fillStyle = '#00007f'
 ctx.fillRect(rectangle_x, rectangle_y, rectangle_width, rectangle_width)

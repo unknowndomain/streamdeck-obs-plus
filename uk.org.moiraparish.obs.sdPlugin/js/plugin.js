@@ -123,7 +123,6 @@ function obsUpdateScenes() {
 function obsUpdateSources() {
 	obs.send('GetSourcesList').then((data) => {
 		OBS.sources = data.sources.map((s) => {
-			// Maybe filter on video sources only ? - or just leave all?
 			return s.name
 		})
 		if (currentPI) sendUpdatedSourcesToPI()
@@ -200,6 +199,7 @@ function handleStreamDeckMessages(e) {
 				let type = ''
 				if (data.action == sceneAction) type = 'scene'
 				buttons[data.context] = new Button(type, data)
+				console.log("didReceiveSettings", data)
 				if (type == 'scene') updateButton(data.context)
 			}
 			break
@@ -303,7 +303,7 @@ function clearPreviewButtons() {
 }
 
 function updateProgramButtons() {
-	console.log("Updating Preview Buttons")
+	console.log("Updating Program Buttons")
 	findButtonsByScene(OBS.program).forEach((b) => {
 		buttons[b].setProgram()
 	})
@@ -314,15 +314,15 @@ function updateProgramButtons() {
 
 function updatePreviewButtons() {
 	console.log("Updating Preview Buttons")
-	findButtonsByScene(OBS.preview).forEach((b) => {
+	findButtonsByScene(OBS.preview).forEach(b => {
 		buttons[b].setPreview()
 	})
-	findButtonsBySource(OBS.preview_sources).forEach((b) => {
+	findButtonsBySource(OBS.preview_sources).forEach(b => {
 		buttons[b].setSourcePreview()
 	})
 }
 
-function updateButtons(mode) {
+function updateButtons() {
 	clearPreviewButtons()
 	if (OBS.preview != OBS.program) updatePreviewButtons()
 	clearProgramButtons()
@@ -330,6 +330,7 @@ function updateButtons(mode) {
 }
 
 function updateButton(context) {
+	console.log("UpdateButton", context)
 	if (buttons[context].scene == OBS.program) {
 		buttons[context].setProgram()
 	} else if (buttons[context].scene == OBS.preview) {
@@ -337,8 +338,6 @@ function updateButton(context) {
 	} else {
 		buttons[context].setOffAir()
 	}
-	// TODO Now to check for Source side matches - and accordingly.
-	// 
 }
 
 function findButtonsByScene(scene) {
@@ -366,7 +365,7 @@ function findButtonsBySource(source_list) {
 function findPreviewButtons() {
 	let output = []
 	Object.keys(buttons).forEach((b) => {
-		if (buttons[b].preview && buttons[b].preview == true) {
+		if ((buttons[b].preview && buttons[b].preview == true)||(buttons[b].source_preview && buttons[b].source_preview == true)) {
 			output.push(b)
 		}
 	})
@@ -376,7 +375,7 @@ function findPreviewButtons() {
 function findProgramButtons() {
 	let output = []
 	Object.keys(buttons).forEach((b) => {
-		if (buttons[b].program && buttons[b].program == true) {
+		if ((buttons[b].program && buttons[b].program == true)||(buttons[b].source_programprogram && buttons[b].source_programprogram == true)) {
 			output.push(b)
 		}
 	})
@@ -390,6 +389,7 @@ function setButtonsOffline() {
 }
 
 function setButtonsOnline() {
+	console.log("Setting Buttons Online")
 	Object.values(buttons).forEach((b) => {
 		b.setOnline()
 	})
