@@ -303,14 +303,22 @@ function clearPreviewButtons() {
 }
 
 function updateProgramButtons() {
+	console.log("Updating Preview Buttons")
 	findButtonsByScene(OBS.program).forEach((b) => {
 		buttons[b].setProgram()
+	})
+	findButtonsBySource(OBS.program_sources).forEach((b) => {
+		buttons[b].setSourceProgram()
 	})
 }
 
 function updatePreviewButtons() {
+	console.log("Updating Preview Buttons")
 	findButtonsByScene(OBS.preview).forEach((b) => {
 		buttons[b].setPreview()
+	})
+	findButtonsBySource(OBS.preview_sources).forEach((b) => {
+		buttons[b].setSourcePreview()
 	})
 }
 
@@ -333,7 +341,6 @@ function updateButton(context) {
 	// 
 }
 
-
 function findButtonsByScene(scene) {
 	let output = []
 	Object.keys(buttons).forEach((b) => {
@@ -343,6 +350,18 @@ function findButtonsByScene(scene) {
 	})
 	return output
 }
+
+
+function findButtonsBySource(source_list) {
+	let output = []
+	Object.keys(buttons).forEach((b) => {
+		if (buttons[b].source && source_list.includes(buttons[b].source)) {
+			output.push(b)
+		}
+	})
+	return output
+}
+
 
 function findPreviewButtons() {
 	let output = []

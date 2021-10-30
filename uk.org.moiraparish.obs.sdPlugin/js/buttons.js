@@ -7,10 +7,14 @@ class Button {
 
 	processStreamDeckData(data) {
 		if (this.type == 'scene' ) {
+			console.log("Processing Streamdeck Payload", data)
 			if (data.payload.settings.scene) {
 				this.scene = data.payload.settings.scene
+				this.soure = data.payload.settings.source
 				this.program = false
 				this.preview = false
+				this.source_program = false
+				this.source_preview = false
 			}
 			if (data.payload.settings.source) this.source = data.payload.settings.source
 			if (data.payload.settings.preset) this.preset = data.payload.settings.preset
@@ -65,11 +69,27 @@ class Button {
 		}
 	}
 
+	setSourcePreview() {
+		if (this.type == 'scene' && !this.source_preview) {
+			this.source_preview = true
+			this.source_program = false
+			this.setOnline()
+		}
+	}
+
+	setSourceProgram() {
+		if (this.type == 'scene' && !this.source_program) {
+			this.source_program = true
+			this.source_preview = false
+			this.setsrcOnline()
+		}
+	}
+
 	setOffAir() {
 		if (this.type == 'scene') {
 			this.program = false
 			this.preview = false
-			this.setOnline()
+			this.setsrcOnline()
 		}
 	}
 
@@ -86,6 +106,25 @@ class Button {
 				break
 			default:
 				StreamDeck.setImage(this.context, blackImg, StreamDeck.BOTH)
+				break
+		}
+	}
+
+
+	setsrcOnline() {
+		switch (this.type) {
+			case 'scene':
+				if (this.source_program) {
+					StreamDeck.setImage(this.context, srcprogramImg, StreamDeck.BOTH)
+				} else if (this.source_preview) {
+					StreamDeck.setImage(this.context, srcpreviewImg, StreamDeck.BOTH)
+				} else {
+					StreamDeck.setImage(this.context, readyImg, StreamDeck.BOTH)
+					// StreamDeck.setImage(this.context, srcreadyImg, StreamDeck.BOTH)
+				}
+				break
+			default:
+				StreamDeck.setImage(this.context, srcblackImg, StreamDeck.BOTH)
 				break
 		}
 	}
