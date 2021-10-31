@@ -101,8 +101,10 @@ class Button {
 
 	setOnline() {
 		console.log("setOnline", this)
+
 		switch (this.type) {
 			case 'scene':
+				ctx.clearRect(0, 0, rectangle_width, rectangle_height);
 				if (this.program) {
 					ctx.strokeStyle = red
 				} else if (this.preview) {
@@ -110,10 +112,9 @@ class Button {
 				} else {
 					ctx.strokeStyle = grey
 				}
-				// ctx.fillRect(rectangle_x, rectangle_y, rectangle_width, rectangle_height)
 				ctx.lineWidth = rectangle_line_width;
-				ctx.rect(0, 0, rectangle_width, rectangle_height);
-				ctx.stroke();
+				ctx.rect(rectangle_x, rectangle_y, rectangle_width, rectangle_height)
+				ctx.stroke()
 				if (!(this.preview || this.program)) {
 					if (this.source_program) {
 						ctx.fillStyle = red
@@ -135,10 +136,13 @@ class Button {
 
 	setOffline() {
 		console.log("Setting Off Line", this)
+		// ctx.clearRect(0, 0, max_rect_width, max_rect_width);
+		ctx.strokeStyle = black
+		ctx.lineWidth = rectangle_line_width
+		ctx.rect(rectangle_x, rectangle_y, rectangle_width, rectangle_height)
+		ctx.stroke()
 		ctx.fillStyle = black
-		ctx.lineWidth = rectangle_line_width;
-		ctx.rect(0, 0, rectangle_width, rectangle_height);
-		ctx.stroke();
+		ctx.fillRect(rectangle_x, src_rectangle_y, rectangle_width, rectangle_line_width)
 		StreamDeck.setImage(this.context, canvas.toDataURL(), StreamDeck.BOTH)
 	}
 
