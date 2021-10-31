@@ -104,21 +104,26 @@ class Button {
 		switch (this.type) {
 			case 'scene':
 				if (this.program) {
-					ctx.fillStyle = red
+					ctx.strokeStyle = red
 				} else if (this.preview) {
-					ctx.fillStyle = green
+					ctx.strokeStyle = green
 				} else {
-					ctx.fillStyle = grey
+					ctx.strokeStyle = grey
 				}
-				ctx.fillRect(rectangle_x, rectangle_y, rectangle_width, rectangle_height)
-				if (this.source_program) {
-					ctx.fillStyle = red
-				} else if (this.source_preview) {
-					ctx.fillStyle = green
-				} else {
-					ctx.fillStyle = grey
+				// ctx.fillRect(rectangle_x, rectangle_y, rectangle_width, rectangle_height)
+				ctx.lineWidth = rectangle_line_width;
+				ctx.rect(0, 0, rectangle_width, rectangle_height);
+				ctx.stroke();
+				if (!(this.preview || this.program)) {
+					if (this.source_program) {
+						ctx.fillStyle = red
+					} else if (this.source_preview) {
+						ctx.fillStyle = green
+					} else {
+						ctx.fillStyle = grey
+					}
+					ctx.fillRect(rectangle_x, src_rectangle_y, rectangle_width, rectangle_line_width)
 				}
-				ctx.fillRect(rectangle_x, src_rectangle_y, rectangle_width, rectangle_height)
 				StreamDeck.setImage(this.context, canvas.toDataURL(), StreamDeck.BOTH)
 				break
 			default:
@@ -131,8 +136,9 @@ class Button {
 	setOffline() {
 		console.log("Setting Off Line", this)
 		ctx.fillStyle = black
-		ctx.fillRect(rectangle_x, rectangle_y, rectangle_width, rectangle_height)
-		ctx.fillRect(rectangle_x, src_rectangle_y, rectangle_width, rectangle_height)
+		ctx.lineWidth = rectangle_line_width;
+		ctx.rect(0, 0, rectangle_width, rectangle_height);
+		ctx.stroke();
 		StreamDeck.setImage(this.context, canvas.toDataURL(), StreamDeck.BOTH)
 	}
 
