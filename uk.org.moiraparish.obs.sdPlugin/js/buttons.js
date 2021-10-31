@@ -29,9 +29,8 @@ class Button {
 					console.log("Starting Scene transition to program")
 					obs.send('TransitionToProgram')
 				} else if (!this.program && this.source_program) {
-					console.log("Switch this scene Live")
-					this._setLive()
-					obs.send('TransitionToProgram')
+					console.log("Switch this scene to preview new")
+					this._setScene()
 				} else if (!this.program && !this.source_program) {
 					console.log("Switch this scene to preview")
 					this._setCameraPreset()
@@ -54,15 +53,6 @@ class Button {
 		}
 	}
 
-	_setLive() {
-		if (OBS.scenes.includes(this.scene)) {
-			obs.send('SetCurrentScene', {
-				'scene-name': this.scene
-			})
-		} else {
-			StreamDeck.sendAlert(this.context)
-		}
-	}
 
 	_updateTitle() {
 		StreamDeck.setTitle(this.context, this[this.type], StreamDeck.BOTH)
@@ -131,7 +121,7 @@ class Button {
 				ctx.lineWidth = rectangle_line_width;
 				ctx.rect(rectangle_x, rectangle_y, rectangle_width, rectangle_height)
 				ctx.stroke()
-				if (!(this.preview || this.program)) {
+				if (!this.program) {
 					if (this.source_program) {
 						ctx.fillStyle = red
 					} else if (this.source_preview) {
@@ -139,7 +129,7 @@ class Button {
 					} else {
 						ctx.fillStyle = grey
 					}
-					ctx.fillRect(rectangle_x, src_rectangle_y, rectangle_width, rectangle_line_width)
+					ctx.fillRect(rectangle_x, src_rectangle_y, rectangle_width, rectangle_line_width/2)
 				}
 				StreamDeck.setImage(this.context, canvas.toDataURL(), StreamDeck.BOTH)
 				break
@@ -158,7 +148,7 @@ class Button {
 		ctx.rect(rectangle_x, rectangle_y, rectangle_width, rectangle_height)
 		ctx.stroke()
 		ctx.fillStyle = black
-		ctx.fillRect(rectangle_x, src_rectangle_y, rectangle_width, rectangle_line_width)
+		ctx.fillRect(rectangle_x, src_rectangle_y, rectangle_width, rectangle_line_width/2)
 		StreamDeck.setImage(this.context, canvas.toDataURL(), StreamDeck.BOTH)
 	}
 
