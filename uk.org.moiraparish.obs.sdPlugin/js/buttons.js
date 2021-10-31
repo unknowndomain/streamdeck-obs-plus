@@ -24,14 +24,21 @@ class Button {
 	keyDown() {
 		switch (this.type) {
 			case 'scene':
+				console.log("Key down here", this)
 				if (this.preview) {
 					console.log("Starting Scene transition to program")
 					obs.send('TransitionToProgram')
+				} else if (!this.program && this.source_program) {
+					console.log("Switch this scene Live")
+					this._setLive()
+					obs.send('TransitionToProgram')
 				} else if (!this.program && !this.source_program) {
+					console.log("Switch this scene to preview")
 					this._setCameraPreset()
 					this._setScene()
 				} else {
-					// Alert warning...
+					// Alert warning... Bad Button
+					StreamDeck.sendAlert(this.context)
 				}
 				break
 		}
@@ -47,6 +54,15 @@ class Button {
 		}
 	}
 
+	_setLive() {
+		if (OBS.scenes.includes(this.scene)) {
+			obs.send('SetCurrentScene', {
+				'scene-name': this.scene
+			})
+		} else {
+			StreamDeck.sendAlert(this.context)
+		}
+	}
 
 	_updateTitle() {
 		StreamDeck.setTitle(this.context, this[this.type], StreamDeck.BOTH)

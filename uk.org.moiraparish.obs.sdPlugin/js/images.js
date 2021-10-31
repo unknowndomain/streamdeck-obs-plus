@@ -2,7 +2,7 @@ const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
 const max_rect_width = 144
-const rectangle_line_width = 8
+const rectangle_line_width = 12
 const rectangle_height = max_rect_width
 const rectangle_width = max_rect_width 
 const rectangle_x = 0
