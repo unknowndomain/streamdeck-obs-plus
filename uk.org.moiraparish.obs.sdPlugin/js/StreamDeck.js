@@ -44,6 +44,11 @@ const StreamDeck = {
 			target: target
 		})
 	},
+	setState: (context, state) => {
+		StreamDeck.send(context, 'setState', {
+			state: state
+		})
+	},
 	getSettings: (context) => {
 		StreamDeck.send(context, 'getSettings')
 	},

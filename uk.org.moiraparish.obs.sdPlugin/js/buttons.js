@@ -1,3 +1,5 @@
+const keyPreset = 1
+const keyUnknown = 0 
 class Button {
 	constructor(type, data) {
 		this.context = data.context
@@ -22,20 +24,23 @@ class Button {
 		}
 	}
 
-	keyDown() {
+	keyDown(state) {
 		switch (this.type) {
 			case 'scene':
-				console.log("Key down here", this)
-				if (this.preview) {
+				console.log("Key down here ======================================", state, this)
+				if (this.preview && state == keyPreset) {
 					console.log("Starting Scene transition to program")
 					obs.send('TransitionToProgram')
+					StreamDeck.setState(this.context, keyUnknown)
 				} else if (!this.program && this.source_program) {
 					console.log("Switch this scene to preview new")
 					this._setScene()
+					StreamDeck.setState(this.context, keyPreset)
 				} else if (!this.program && !this.source_program) {
 					console.log("Switch this scene to preview")
 					this._setCameraPreset()
 					this._setScene()
+					StreamDeck.setState(this.context, keyPreset)
 				} else {
 					// Alert warning... Bad Button
 					StreamDeck.sendAlert(this.context)

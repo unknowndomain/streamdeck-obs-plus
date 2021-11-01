@@ -176,14 +176,15 @@ function handleStreamDeckMessages(e) {
 			break
 		case 'keyDown':
 			printConnectionState()
+			console.log("Received Key Down", data)
 			if (connectionState == ConnectionState.AUTHENTICATED) {
-				buttons[data.context].keyDown()
+				buttons[data.context].keyDown(data.payload.state)
 			} else {
 				connectionState = ConnectionState.DISCONNECTED
 				connect()
 				setTimeout(() => {
 					if (connectionState == ConnectionState.AUTHENTICATED) {
-						buttons[data.context].keyDown()
+						buttons[data.context].keyDown(data.payload.state)
 					} else {
 						StreamDeck.sendAlert(data.context)
 					}

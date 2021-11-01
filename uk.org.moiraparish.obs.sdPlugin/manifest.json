@@ -18,7 +18,9 @@
 			"Icon": "icons/scene",
 			"PropertyInspectorPath": "scene-pi.html",
 			"States": [
-				{"Image":"icons/scene"}
+				{"Image":"icons/scene", "Title": "Unknown"},
+				{"Image":"icons/scene", "Title": "Preset"
+				}
 			]
 		}
 	],
