@@ -36,9 +36,6 @@ class Button {
 					console.log("Switch this scene to preview")
 					this._setCameraPreset()
 					this._setScene()
-					// // // StreamDeck.setSettings(this.context, {
-					// // 	last_preset: 'test'
-					// })
 				} else {
 					// Alert warning... Bad Button
 					StreamDeck.sendAlert(this.context)
