@@ -7,7 +7,7 @@ class Button {
 
 	processStreamDeckData(data) {
 		if (this.type == 'scene') {
-			console.log("Processing Streamdeck Payload", data)
+			console.log("Processing Streamdeck Payload", data, OBS)
 			this.program = false
 			this.preview = false
 			this.source_program = false
@@ -16,6 +16,7 @@ class Button {
 			if (data.payload.settings.source) this.source = data.payload.settings.source
 			if (data.payload.settings.preset) this.preset = data.payload.settings.preset
 			if (data.payload.settings.ipaddress) this.ipaddress = data.payload.settings.ipaddress
+			if (data.payload.settings.lastpreset) this.lastpreset = data.payload.settings.lastpreset
 			console.log('Processed this data:', data)
 			this._updateTitle()
 		}
@@ -35,6 +36,9 @@ class Button {
 					console.log("Switch this scene to preview")
 					this._setCameraPreset()
 					this._setScene()
+					// // // StreamDeck.setSettings(this.context, {
+					// // 	last_preset: 'test'
+					// })
 				} else {
 					// Alert warning... Bad Button
 					StreamDeck.sendAlert(this.context)
