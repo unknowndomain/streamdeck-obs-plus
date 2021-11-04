@@ -88,7 +88,7 @@ obs.on('AuthenticationSuccess', () => {
 	obsUpdateSources()
 	updateCameraSettings()
 	updateButtons()
-	setButtonsOnline()
+	// setButtonsOnline()
 })
 obs.on('AuthenticationFailure', () => {
 	connectionState = ConnectionState.FAILED
@@ -178,13 +178,13 @@ function handleStreamDeckMessages(e) {
 			printConnectionState()
 			console.log("Received Key Down", data)
 			if (connectionState == ConnectionState.AUTHENTICATED) {
-				buttons[data.context].keyDown(data.payload.state)
+				buttons[data.context].keyDown()
 			} else {
 				connectionState = ConnectionState.DISCONNECTED
 				connect()
 				setTimeout(() => {
 					if (connectionState == ConnectionState.AUTHENTICATED) {
-						buttons[data.context].keyDown(data.payload.state)
+						buttons[data.context].keyDown()
 					} else {
 						StreamDeck.sendAlert(data.context)
 					}

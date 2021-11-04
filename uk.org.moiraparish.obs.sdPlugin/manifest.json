@@ -18,9 +18,13 @@
 			"Icon": "icons/scene",
 			"PropertyInspectorPath": "scene-pi.html",
 			"States": [
-				{"Image":"icons/scene", "Title": "Unknown"},
-				{"Image":"icons/scene", "Title": "Preset"
-				}
+				{"Image":"icons/scene", "Title": "0-Inactive"},
+				{"Image":"icons/scene", "Title": "1-Preview Primed"},
+				{"Image":"icons/scene", "Title": "2-Preview NOT Primed"},
+				{"Image":"icons/scene", "Title": "3-Source Preview"},
+				{"Image":"icons/scene", "Title": "4-Source Live"},
+				{"Image":"icons/scene", "Title": "5-Live Output Primed"},
+				{"Image":"icons/scene", "Title": "6-Live Output NOT Primed"}
 			]
 		}
 	],

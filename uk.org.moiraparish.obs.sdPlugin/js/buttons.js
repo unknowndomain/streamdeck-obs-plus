@@ -1,5 +1,13 @@
-const keyPreset = 1
-const keyUnknown = 0 
+const keyInactive = 0
+const keyPreviewPrimed = 1
+const keyPreviewNotPrimed = 2
+const keySourcePreview = 3
+const keySourceLive = 4
+const keyLiveOutputPrimed = 5
+const keyLiveOutputNotPrimed = 6
+
+let lower_bar = ""
+let main_box = ""
 class Button {
 	constructor(type, data) {
 		this.context = data.context
@@ -9,47 +17,49 @@ class Button {
 
 	processStreamDeckData(data) {
 		if (this.type == 'scene') {
-			console.log("Processing Streamdeck Payload", data, OBS)
-			this.program = false
-			this.preview = false
-			this.source_program = false
-			this.source_preview = false
+			console.log("Processing Streamdeck Payload ......", data.payload.state, data, OBS)
 			if (data.payload.settings.scene) this.scene = data.payload.settings.scene
 			if (data.payload.settings.source) this.source = data.payload.settings.source
 			if (data.payload.settings.preset) this.preset = data.payload.settings.preset
 			if (data.payload.settings.ipaddress) this.ipaddress = data.payload.settings.ipaddress
 			if (data.payload.settings.lastpreset) this.lastpreset = data.payload.settings.lastpreset
-			console.log('Processed this data:', data)
+			if (data.payload.state) this.state = data.payload.state
+			console.log ("Payload Processing ........:", this.scene, "source", this.source, "state", this.state)
 			this._updateTitle()
 		}
 	}
 
-	keyDown(state) {
+	keyDown() {
 		switch (this.type) {
 			case 'scene':
-				console.log("Key down here ======================================", state, this)
-				if (this.preview && state == keyPreset) {
-					console.log("Starting Scene transition to program")
-					obs.send('TransitionToProgram')
-					StreamDeck.setState(this.context, keyUnknown)
-				} else if (!this.program && this.source_program) {
-					console.log("Switch this scene to preview new")
-					this._setScene()
-					StreamDeck.setState(this.context, keyPreset)
-				} else if (!this.program && !this.source_program) {
-					console.log("Switch this scene to preview")
-					this._setCameraPreset()
-					this._setScene()
-					StreamDeck.setState(this.context, keyPreset)
-				} else {
-					// Alert warning... Bad Button
-					StreamDeck.sendAlert(this.context)
+				console.log("Key down here Scene:", this.scene, "source", this.source, "state", this.state, this)
+				switch (this.state) {
+					case keyInactive:
+						this._PreviewPrimed()
+						break
+					case keyPreviewPrimed:
+						this._LiveOutput()
+						break
+					case keyPreviewNotPrimed:
+						this._PreviewPrimed()
+						break
+					case keySourcePreview: 
+						this._PreviewPrimed()
+						break
+					case keySourceLive:
+						StreamDeck.sendAlert(this.context)
+						break
+					case keyLiveOutputPrimed:
+						StreamDeck.sendAlert(this.context)
+						break
+					case keyLiveOutputNotPrimed:
+						StreamDeck.sendAlert(this.context)
+						break
 				}
-				break
 		}
 	}
 
-	_setScene() {
+	_PreviewPrimed() {
 		if (OBS.scenes.includes(this.scene)) {
 			obs.send(OBS.studioMode ? 'SetPreviewScene' : 'SetCurrentScene', {
 				'scene-name': this.scene
@@ -59,6 +69,14 @@ class Button {
 		}
 	}
 
+	_LiveOutput() {
+		console.log("Starting Scene transition to program")
+		obs.send('TransitionToProgram')
+		_setState(keySourceLive)
+	}
+
+	_setScene() {
+	}
 
 	_updateTitle() {
 		StreamDeck.setTitle(this.context, this[this.type], StreamDeck.BOTH)
@@ -66,76 +84,96 @@ class Button {
 
 	setPreview() {
 		if (this.type == 'scene' && !this.preview) {
-			this.program = false
-			this.preview = true
 			console.log("setPreview", this)
+			this._setState(keyPreviewNotPrimed)
 			this.setOnline()
 		}
 	}
 
 	setProgram() {
 		if (this.type == 'scene' && !this.program) {
-			this.program = true
-			this.preview = false
 			console.log("setProgram", this)
+			this._setState(keyLiveOutputNotPrimed)
 			this.setOnline()
 		}
 	}
 
 	setSourcePreview() {
 		if (this.type == 'scene' && !this.source_preview) {
-			this.source_program = false
-			this.source_preview = true
 			console.log("setSourcePreview", this)
+			this._setState(keySourcePreview)
+			this.state = keySourcePreview
 			this.setOnline()
 		}
 	}
 
 	setSourceProgram() {
 		if (this.type == 'scene' && !this.source_program) {
-			this.source_program = true
-			this.source_preview = false
 			console.log("setSourceProgram", this)
+			this._setState(keySourceLive)
 			this.setOnline()
 		}
 	}
 
 	setOffAir() {
 		if (this.type == 'scene') {
-			this.program = false
-			this.preview = false
-			this.source_program = false
-			this.source_preview = false
 			console.log("Setting OFF AIR", this)
+			this._setState(keyInactive)
 			this.setOffline()
 		}
 	}
 
+	_setState(newstate) {
+		StreamDeck.setState(this.context, newstate)
+		this.state = newstate
+	}
+
 	setOnline() {
-		console.log("setOnline", this)
+		console.log("setOnline Scene:", this.scene, "source", this.source, "state", this.state, this)
 
 		switch (this.type) {
 			case 'scene':
-				ctx.clearRect(0, 0, rectangle_width, rectangle_height);
-				if (this.program) {
-					ctx.strokeStyle = red
-				} else if (this.preview) {
-					ctx.strokeStyle = green
-				} else {
-					ctx.strokeStyle = grey
+				main_box = ""
+				lower_bar = ""
+				switch (this.state) {
+					case keyInactive:
+						main_box = grey
+						lower_bar = grey
+						break
+					case keyPreviewPrimed:
+						main_box = green
+						break
+					case keyPreviewNotPrimed:
+						main_box = green
+						break
+					case keySourcePreview:
+						lower_bar = green
+						break
+					case keySourceLive:
+						lower_bar = red
+						break
+					case keyLiveOutputPrimed:
+						main_box = red
+						break
+					case keyLiveOutputNotPrimed:
+						main_box = red
+						break
 				}
-				ctx.lineWidth = rectangle_line_width;
-				ctx.rect(rectangle_x, rectangle_y, rectangle_width, rectangle_height)
-				ctx.stroke()
-				if (!this.program) {
-					if (this.source_program) {
-						ctx.fillStyle = red
-					} else if (this.source_preview) {
-						ctx.fillStyle = green
-					} else {
-						ctx.fillStyle = grey
-					}
-					ctx.fillRect(rectangle_x, src_rectangle_y, rectangle_width, rectangle_line_width/2)
+				console.log("***** SetOnline Scene:", this.scene, "source", this.source, "state", this.state, "main:", main_box, "lower", lower_bar)
+
+				ctx.clearRect(0, 0, rectangle_width, rectangle_height);
+				if (main_box != "") {
+					console.log("FILLING MAIN BOX")
+					ctx.strokeStyle = main_box
+					ctx.lineWidth = rectangle_line_width;
+					ctx.rect(rectangle_x, rectangle_y, rectangle_width, rectangle_height)
+					ctx.stroke()
+				}
+				if (lower_bar != "") {
+					console.log("FILLING LOWER BAR")
+					ctx.fillStyle = lower_bar
+					ctx.lineWidth = rectangle_line_width;
+					ctx.fillRect(rectangle_x, src_rectangle_y, rectangle_width, rectangle_line_width / 2)
 				}
 				StreamDeck.setImage(this.context, canvas.toDataURL(), StreamDeck.BOTH)
 				break
@@ -147,14 +185,14 @@ class Button {
 	}
 
 	setOffline() {
-		console.log("Setting Off Line", this)
+		console.log("Setting Off Line Scene:", this.scene, "source", this.source, "state", this.state, this)
 		// ctx.clearRect(0, 0, max_rect_width, max_rect_width);
 		ctx.strokeStyle = black
 		ctx.lineWidth = rectangle_line_width
 		ctx.rect(rectangle_x, rectangle_y, rectangle_width, rectangle_height)
 		ctx.stroke()
 		ctx.fillStyle = black
-		ctx.fillRect(rectangle_x, src_rectangle_y, rectangle_width, rectangle_line_width/2)
+		ctx.fillRect(rectangle_x, src_rectangle_y, rectangle_width, rectangle_line_width / 2)
 		StreamDeck.setImage(this.context, canvas.toDataURL(), StreamDeck.BOTH)
 	}
 
