@@ -88,7 +88,7 @@ obs.on('AuthenticationSuccess', () => {
 	obsUpdateSources()
 	updateCameraSettings()
 	updateButtons()
-	// setButtonsOnline()
+	setButtonsOnline()
 })
 obs.on('AuthenticationFailure', () => {
 	connectionState = ConnectionState.FAILED
@@ -304,22 +304,24 @@ function clearPreviewButtons() {
 }
 
 function updateProgramButtons() {
-	console.log("Updating Program Buttons", OBS)
-	findButtonsByScene(OBS.program).forEach((b) => {
+	programButtons = findButtonsByScene(OBS.program)
+	// console.log("Updating Program Buttons", OBS, programButtons)
+	programButtons.forEach((b) => {
 		buttons[b].setProgram()
 	})
 	findButtonsBySource(OBS.program_sources).forEach((b) => {
-		buttons[b].setSourceProgram()
+		if (!programButtons.includes(b, 0)) buttons[b].setSourceProgram()
 	})
 }
 
 function updatePreviewButtons() {
-	console.log("Updating Preview Buttons", OBS)
-	findButtonsByScene(OBS.preview).forEach(b => {
+	previewButtons = findButtonsByScene(OBS.preview)
+	// console.log("Updating Preview Buttons", OBS, previewButtons)
+	previewButtons.forEach(b => {
 		buttons[b].setPreview()
 	})
 	findButtonsBySource(OBS.preview_sources).forEach(b => {
-		buttons[b].setSourcePreview()
+		if (!previewButtons.includes(b, 0))  buttons[b].setSourcePreview()
 	})
 }
 

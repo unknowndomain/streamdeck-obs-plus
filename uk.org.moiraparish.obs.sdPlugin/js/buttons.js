@@ -23,7 +23,8 @@ class Button {
 			if (data.payload.settings.preset) this.preset = data.payload.settings.preset
 			if (data.payload.settings.ipaddress) this.ipaddress = data.payload.settings.ipaddress
 			if (data.payload.settings.lastpreset) this.lastpreset = data.payload.settings.lastpreset
-			if (data.payload.state) this.state = data.payload.state
+			// if (data.payload.state) this.state = data.payload.state
+			this.state = keyInactive
 			console.log ("Payload Processing ........:", this.scene, "source", this.source, "state", this.state)
 			this._updateTitle()
 		}
@@ -83,23 +84,24 @@ class Button {
 	}
 
 	setPreview() {
-		if (this.type == 'scene' && !this.preview) {
+		// Add detection here for primed/no primed
+		if (this.type == 'scene' ) {
 			console.log("setPreview", this)
-			this._setState(keyPreviewNotPrimed)
+			this._setState(keyPreviewPrimed)
 			this.setOnline()
 		}
 	}
 
 	setProgram() {
-		if (this.type == 'scene' && !this.program) {
+		if (this.type == 'scene' ) {
 			console.log("setProgram", this)
-			this._setState(keyLiveOutputNotPrimed)
+			this._setState(keyLiveOutputPrimed)
 			this.setOnline()
 		}
 	}
 
 	setSourcePreview() {
-		if (this.type == 'scene' && !this.source_preview) {
+		if (this.type == 'scene') {
 			console.log("setSourcePreview", this)
 			this._setState(keySourcePreview)
 			this.state = keySourcePreview
@@ -108,7 +110,7 @@ class Button {
 	}
 
 	setSourceProgram() {
-		if (this.type == 'scene' && !this.source_program) {
+		if (this.type == 'scene') {
 			console.log("setSourceProgram", this)
 			this._setState(keySourceLive)
 			this.setOnline()
