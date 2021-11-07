@@ -191,6 +191,11 @@ function handleStreamDeckMessages(e) {
 				}, 10)
 			}
 			break
+		case 'keyUp':
+			printConnectionState()
+			console.log("Received Key Up", data)
+			if (buttons[data.context].primed == true) updateButtons()
+			break;
 		case 'willAppear':
 		case 'titleParametersDidChange':
 		case 'didReceiveSettings':
@@ -389,7 +394,15 @@ function findProgramButtons() {
 	return output
 }
 
-
+function clearPrimeButtons() {
+	console.log("Clearing Primed Buttons")
+	Object.keys(buttons).forEach((b) => {
+		// Only work on this current preview scene to check.
+		if (buttons[b].scene == OBS.preview) {
+			buttons[b].primed = false
+		}
+	})
+}
 
 function setButtonsOffline() {
 	console.log("Setting Buttons Online -------------------------------------------------------------")

@@ -13,6 +13,8 @@ class Button {
 	constructor(type, data) {
 		this.context = data.context
 		this.type = type
+		this.state = keyInactive
+		this.primed = false
 		this.processStreamDeckData(data)
 	}
 
@@ -24,8 +26,6 @@ class Button {
 			if (data.payload.settings.preset) this.preset = data.payload.settings.preset
 			if (data.payload.settings.ipaddress) this.ipaddress = data.payload.settings.ipaddress
 			if (data.payload.settings.lastpreset) this.lastpreset = data.payload.settings.lastpreset
-			// if (data.payload.state) this.state = data.payload.state
-			this.state = keyInactive
 			console.log ("Payload Processing ........:", this.scene, "source", this.source, "state", this.state)
 			this._updateTitle()
 		}
@@ -63,9 +63,19 @@ class Button {
 
 	_PreviewPrimed() {
 		if (OBS.scenes.includes(this.scene)) {
-			obs.send(OBS.studioMode ? 'SetPreviewScene' : 'SetCurrentScene', {
-				'scene-name': this.scene
-			})
+			if (this.scene != OBS.preview) {
+				console.log("Setting Scene to: ", this.scene)
+				obs.send(OBS.studioMode ? 'SetPreviewScene' : 'SetCurrentScene', {
+					'scene-name': this.scene
+				})
+			} else {
+				console.log("Scene already set no changing")
+				// Maybe I need some sort of callback action though to trigger buttons....
+			}
+			clearPrimeButtons()
+			this.primed = true
+			this._setState(keyPreviewPrimed)
+			// TODO - set Movement.
 		} else {
 			StreamDeck.sendAlert(this.context)
 		}
@@ -74,10 +84,8 @@ class Button {
 	_LiveOutput() {
 		console.log("Starting Scene transition to program")
 		obs.send('TransitionToProgram')
-		_setState(keySourceLive)
-	}
-
-	_setScene() {
+		this._setState(keySourceLive)
+		this.primed = false
 	}
 
 	_updateTitle() {
@@ -88,7 +96,13 @@ class Button {
 		// Add detection here for primed/no primed
 		if (this.type == 'scene' ) {
 			console.log("setPreview", this)
-			this._setState(keyPreviewPrimed)
+			if (this.primed) {
+				this._setState(keyPreviewPrimed)
+				this.primed = false
+			} else {
+				this._setState(keyPreviewNotPrimed)
+			}
+			
 			this.setOnline()
 		}
 	}
@@ -146,11 +160,10 @@ class Button {
 						break
 					case keyPreviewPrimed:
 						main_box = green
-						circle_col = red
+						circle_col = green
 						break
 					case keyPreviewNotPrimed:
 						main_box = green
-						circle_col = green
 						break
 					case keySourcePreview:
 						lower_bar = green
@@ -165,28 +178,32 @@ class Button {
 						main_box = red
 						break
 				}
-				console.log("***** SetOnline Scene:", this.scene, "source", this.source, "state", this.state, "main:", main_box, "lower", lower_bar, "Circle:", circle_col)
+				console.log("***** SetOnline Scene:", 
+							this.scene, "source", 
+							this.source, "state", 
+							this.state, "main:", main_box, 
+							"lower", lower_bar, 
+							"Circle:", circle_col)
 
 				ctx.clearRect(0, 0, rectangle_width, rectangle_height);
+				ctx.beginPath()
+				if (circle_col != "") {
+					ctx.fillStyle = circle_col;
+					ctx.strokeStyle = circle_col
+					ctx.beginPath();
+					ctx.arc(primed_x, primed_y, primed_radius, 0, 2 * Math.PI);
+					ctx.fill();
+				}
 				if (main_box != "") {
-					console.log("FILLING MAIN BOX")
 					ctx.strokeStyle = main_box
 					ctx.lineWidth = rectangle_line_width;
 					ctx.rect(rectangle_x, rectangle_y, rectangle_width, rectangle_height)
 					ctx.stroke()
 				}
 				if (lower_bar != "") {
-					console.log("FILLING LOWER BAR")
 					ctx.fillStyle = lower_bar
 					ctx.lineWidth = rectangle_line_width;
 					ctx.fillRect(rectangle_x, src_rectangle_y, rectangle_width, rectangle_line_width / 2)
-				}
-				if (circle_col != "") {
-					console.log("CIRCLE THE PRIME")
-					ctx.fillStyle = circle_col;
-					ctx.beginPath();
-					ctx.arc(primed_x, primed_y, primed_radius, 0, 2 * Math.PI);
-					ctx.fill();
 				}
 				StreamDeck.setImage(this.context, canvas.toDataURL(), StreamDeck.BOTH)
 				break
