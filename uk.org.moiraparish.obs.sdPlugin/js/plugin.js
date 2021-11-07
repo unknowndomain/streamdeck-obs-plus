@@ -194,6 +194,7 @@ function handleStreamDeckMessages(e) {
 		case 'keyUp':
 			printConnectionState()
 			console.log("Received Key Up", data)
+			// Need button repaint to pick up prime changes.
 			if (buttons[data.context].primed == true) updateButtons()
 			break;
 		case 'willAppear':
@@ -387,7 +388,7 @@ function findProgramButtons() {
 	Object.keys(buttons).forEach((b) => {
 		button_state = keyInactive
 		if (buttons[b].state) button_state = buttons[b].state
-		if (button_state == keyLiveOutputPrimed || button_state == keyLiveOutputNotPrimed || button_state == keySourceLive) {
+		if (button_state == keyLiveOutput || button_state == keySourceLive) {
 			output.push(b)
 		}
 	})

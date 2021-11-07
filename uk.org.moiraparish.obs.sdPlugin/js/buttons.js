@@ -3,8 +3,7 @@ const keyPreviewPrimed = 1
 const keyPreviewNotPrimed = 2
 const keySourcePreview = 3
 const keySourceLive = 4
-const keyLiveOutputPrimed = 5
-const keyLiveOutputNotPrimed = 6
+const keyLiveOutput = 5
 
 let lower_bar = ""
 let main_box = ""
@@ -49,12 +48,9 @@ class Button {
 						this._PreviewPrimed()
 						break
 					case keySourceLive:
-						StreamDeck.sendAlert(this.context)
+						this._LiveOutputfromSource()
 						break
-					case keyLiveOutputPrimed:
-						StreamDeck.sendAlert(this.context)
-						break
-					case keyLiveOutputNotPrimed:
+					case keyLiveOutput:
 						StreamDeck.sendAlert(this.context)
 						break
 				}
@@ -70,7 +66,6 @@ class Button {
 				})
 			} else {
 				console.log("Scene already set no changing")
-				// Maybe I need some sort of callback action though to trigger buttons....
 			}
 			clearPrimeButtons()
 			this.primed = true
@@ -85,9 +80,12 @@ class Button {
 		console.log("Starting Scene transition to program")
 		obs.send('TransitionToProgram')
 		this._setState(keySourceLive)
-		this.primed = false
 	}
 
+	_LiveOutputfromSource() {
+		console.log("Starting Scene transition to program")
+		// TODO - Pick correct Live Scene for this button and transition to it as live.
+	}
 	_updateTitle() {
 		StreamDeck.setTitle(this.context, this[this.type], StreamDeck.BOTH)
 	}
@@ -98,7 +96,6 @@ class Button {
 			console.log("setPreview", this)
 			if (this.primed) {
 				this._setState(keyPreviewPrimed)
-				this.primed = false
 			} else {
 				this._setState(keyPreviewNotPrimed)
 			}
@@ -110,7 +107,7 @@ class Button {
 	setProgram() {
 		if (this.type == 'scene' ) {
 			console.log("setProgram", this)
-			this._setState(keyLiveOutputPrimed)
+			this._setState(keyLiveOutput)
 			this.setOnline()
 		}
 	}
@@ -171,11 +168,9 @@ class Button {
 					case keySourceLive:
 						lower_bar = red
 						break
-					case keyLiveOutputPrimed:
+					case keyLiveOutput:
 						main_box = red
-						break
-					case keyLiveOutputNotPrimed:
-						main_box = red
+						if (this.primed) circle_col = red
 						break
 				}
 				console.log("***** SetOnline Scene:", 
