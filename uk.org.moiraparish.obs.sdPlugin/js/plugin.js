@@ -368,7 +368,9 @@ function findButtonsBySource(source_list) {
 function findPreviewButtons() {
 	let output = []
 	Object.keys(buttons).forEach((b) => {
-		if ((buttons[b].preview && buttons[b].preview == true)||(buttons[b].source_preview && buttons[b].source_preview == true)) {
+		button_state = keyInactive
+		if (buttons[b].state) button_state = buttons[b].state
+		if (button_state == keyPreviewPrimed || button_state == keyPreviewNotPrimed || button_state == keySourcePreview) {
 			output.push(b)
 		}
 	})
@@ -378,21 +380,26 @@ function findPreviewButtons() {
 function findProgramButtons() {
 	let output = []
 	Object.keys(buttons).forEach((b) => {
-		if ((buttons[b].program && buttons[b].program == true)||(buttons[b].source_programprogram && buttons[b].source_programprogram == true)) {
+		button_state = keyInactive
+		if (buttons[b].state) button_state = buttons[b].state
+		if (button_state == keyLiveOutputPrimed || button_state == keyLiveOutputNotPrimed || button_state == keySourceLive) {
 			output.push(b)
 		}
 	})
 	return output
 }
 
+
+
 function setButtonsOffline() {
+	console.log("Setting Buttons Online -------------------------------------------------------------")
 	Object.values(buttons).forEach((b) => {
 		b.setOffline()
 	})
 }
 
 function setButtonsOnline() {
-	console.log("Setting Buttons Online")
+	console.log("Setting Buttons Online +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 	Object.values(buttons).forEach((b) => {
 		b.setOnline()
 	})
