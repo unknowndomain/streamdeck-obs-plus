@@ -8,6 +8,9 @@ const rectangle_width = max_rect_width
 const rectangle_x = 0
 const rectangle_y = 0
 const src_rectangle_y = rectangle_height - rectangle_line_width
+const primed_x = 100
+const primed_y = 40
+const primed_radius = 10
 
 const red = '#ff0000'
 const green = '#00ff00'

@@ -8,6 +8,7 @@ const keyLiveOutputNotPrimed = 6
 
 let lower_bar = ""
 let main_box = ""
+let circle_col = ""
 class Button {
 	constructor(type, data) {
 		this.context = data.context
@@ -137,6 +138,7 @@ class Button {
 			case 'scene':
 				main_box = ""
 				lower_bar = ""
+				circle_col = ""
 				switch (this.state) {
 					case keyInactive:
 						main_box = grey
@@ -144,9 +146,11 @@ class Button {
 						break
 					case keyPreviewPrimed:
 						main_box = green
+						circle_col = red
 						break
 					case keyPreviewNotPrimed:
 						main_box = green
+						circle_col = green
 						break
 					case keySourcePreview:
 						lower_bar = green
@@ -161,7 +165,7 @@ class Button {
 						main_box = red
 						break
 				}
-				console.log("***** SetOnline Scene:", this.scene, "source", this.source, "state", this.state, "main:", main_box, "lower", lower_bar)
+				console.log("***** SetOnline Scene:", this.scene, "source", this.source, "state", this.state, "main:", main_box, "lower", lower_bar, "Circle:", circle_col)
 
 				ctx.clearRect(0, 0, rectangle_width, rectangle_height);
 				if (main_box != "") {
@@ -176,6 +180,13 @@ class Button {
 					ctx.fillStyle = lower_bar
 					ctx.lineWidth = rectangle_line_width;
 					ctx.fillRect(rectangle_x, src_rectangle_y, rectangle_width, rectangle_line_width / 2)
+				}
+				if (circle_col != "") {
+					console.log("CIRCLE THE PRIME")
+					ctx.fillStyle = circle_col;
+					ctx.beginPath();
+					ctx.arc(primed_x, primed_y, primed_radius, 0, 2 * Math.PI);
+					ctx.fill();
 				}
 				StreamDeck.setImage(this.context, canvas.toDataURL(), StreamDeck.BOTH)
 				break
