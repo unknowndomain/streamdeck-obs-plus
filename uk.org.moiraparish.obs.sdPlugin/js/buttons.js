@@ -48,7 +48,7 @@ class Button {
 						this._PreviewPrimed()
 						break
 					case keySourceLive:
-						this._LiveOutputfromSource()
+						StreamDeck.sendAlert(this.context)
 						break
 					case keyLiveOutput:
 						StreamDeck.sendAlert(this.context)
@@ -82,10 +82,6 @@ class Button {
 		this._setState(keySourceLive)
 	}
 
-	_LiveOutputfromSource() {
-		console.log("Starting Scene transition to program")
-		// TODO - Pick correct Live Scene for this button and transition to it as live.
-	}
 	_updateTitle() {
 		StreamDeck.setTitle(this.context, this[this.type], StreamDeck.BOTH)
 	}
@@ -163,9 +159,11 @@ class Button {
 						main_box = green
 						break
 					case keySourcePreview:
+						main_box = blue
 						lower_bar = green
 						break
 					case keySourceLive:
+						main_box = blue
 						lower_bar = red
 						break
 					case keyLiveOutput:
