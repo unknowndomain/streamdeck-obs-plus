@@ -149,7 +149,6 @@ class Button {
 				switch (this.state) {
 					case keyInactive:
 						main_box = grey
-						lower_bar = grey
 						break
 					case keyPreviewPrimed:
 						main_box = green
