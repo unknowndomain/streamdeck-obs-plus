@@ -148,7 +148,6 @@ class Button {
 				circle_col = ""
 				switch (this.state) {
 					case keyInactive:
-						main_box = grey
 						break
 					case keyPreviewPrimed:
 						main_box = green
@@ -158,11 +157,9 @@ class Button {
 						main_box = green
 						break
 					case keySourcePreview:
-						main_box = blue
 						lower_bar = green
 						break
 					case keySourceLive:
-						main_box = blue
 						lower_bar = red
 						break
 					case keyLiveOutput:
@@ -177,7 +174,7 @@ class Button {
 							"lower", lower_bar, 
 							"Circle:", circle_col)
 
-				ctx.clearRect(0, 0, rectangle_width, rectangle_height);
+				ctx.clearRect(0, 0, max_rect_width, max_rect_width);
 				ctx.beginPath()
 				if (circle_col != "") {
 					ctx.fillStyle = circle_col;
@@ -193,9 +190,11 @@ class Button {
 					ctx.stroke()
 				}
 				if (lower_bar != "") {
-					ctx.fillStyle = lower_bar
+					ctx.strokeStyle = lower_bar
 					ctx.lineWidth = rectangle_line_width;
-					ctx.fillRect(rectangle_x, src_rectangle_y, rectangle_width, rectangle_line_width / 2)
+					ctx.moveTo(rectangle_x, src_rectangle_y)
+					ctx.lineTo(rectangle_width, src_rectangle_y)
+					ctx.stroke()
 				}
 				StreamDeck.setImage(this.context, canvas.toDataURL(), StreamDeck.BOTH)
 				break
@@ -208,7 +207,7 @@ class Button {
 
 	setOffline() {
 		console.log("Setting Off Line Scene:", this.scene, "source", this.source, "state", this.state, this)
-		// ctx.clearRect(0, 0, max_rect_width, max_rect_width);
+		ctx.clearRect(0, 0, max_rect_width, max_rect_width);
 		ctx.strokeStyle = black
 		ctx.lineWidth = rectangle_line_width
 		ctx.rect(rectangle_x, rectangle_y, rectangle_width, rectangle_height)
