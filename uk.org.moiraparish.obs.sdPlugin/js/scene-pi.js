@@ -9,6 +9,7 @@ let currentButtonImage
 
 function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) {
 	data = JSON.parse(action)
+	console.log("Payload from streamdeck", data.payload)
 	currentScene = data.payload.settings.scene
 	currentSource = data.payload.settings.source
 	currentPreset = data.payload.settings.preset
@@ -28,6 +29,7 @@ function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) 
 		const data = JSON.parse(e.data)
 		switch(data.event) {
 			case 'sendToPropertyInspector':
+				console.log("And its the PROPERTY INSPECTOR", data)
 				if (data.payload.settings) updateSettingsUI(data)
 				if (data.payload.scenes) {
 					obsScenes = data.payload.scenes
@@ -37,15 +39,9 @@ function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) 
 					obsSources = data.payload.sources
 					updateSourceUI()
 				}
-				if(data.payload.preset) {
-					updateCameraSettingsPreset()
-				}
-				if(data.payload.ipaddress) {
-					updateCameraSettingsIpAddress()
-				}
-				if(data.payload.buttonimage) {
-					updateButtonImage()
-				}
+				if (data.payload.preset) updateCameraSettingsPreset()
+				if (data.payload.ipaddress) updateCameraSettingsIpAddress()
+				if (data.payload.buttonimage) updateButtonImage()
 				break
 			case 'didReceiveGlobalSettings':
 				updateSettingsUI(data)
@@ -123,6 +119,7 @@ function updateSettings() {
 	currentPreset = document.getElementById('preset').value
 	currentIpAddress = document.getElementById('ipaddress').value
 	currentButtonImage = document.getElementById('buttonimage').value
+	console.log("Finished updateSettings", currentButtonImage)
 }
 
 function updateCameraSettingsIpAddress() {
@@ -130,6 +127,7 @@ function updateCameraSettingsIpAddress() {
 }
 
 function updateButtonImage () {
+	console.log("updateButtonImage", currentButtonImage)
 	document.getElementById('buttonimage').value = currentButtonImage
 }
 
