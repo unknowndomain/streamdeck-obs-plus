@@ -6,43 +6,60 @@
 		<script src="js/StreamDeck.js" charset="utf-8"></script>
 	</head>
 	<body>
-		<div class="sdpi-heading">Scene Select/Source Tally</div>
 		<div class="sdpi-wrapper">
-			<div class="sdpi-item" id="select_single">
-				<div class="sdpi-item-label">Scene</div>
-				<select class="sdpi-item-value select" id="scenes">
-					<option></option>
-				</select>
-			</div>
-			<div class="sdpi-item" id="select_single">
-				<div class="sdpi-item-label">Source</div>
-				<select class="sdpi-item-value select" id="sources">
-					<option></option>
-				</select>
+
+			<div type="group" class="sdpi-item" id="ptzgroup">
+				<div class="sdpi-item-label">Scene Select/Source Tally</div>
+				<div class="sdpi-item-group" id="ptzgroup_items">
+					<div class="sdpi-item" id="select_single">
+						<div class="sdpi-item-label">Scene</div>
+						<select class="sdpi-item-value select" id="scenes">
+							<option></option>
+						</select>
+					</div>
+					<div class="sdpi-item" id="select_single">
+						<div class="sdpi-item-label">Source</div>
+						<select class="sdpi-item-value select" id="sources">
+							<option></option>
+						</select>
+					</div>
+				</div>
+				<div class="sdpi-item">
+					<div class="sdpi-item-label">Image File</div>
+					<input class="sdpi-item-value" type="file" id="buttonimage" accept=".jpg, .jpeg, .png, .gif">
+				</div>
 			</div>
 
-			<div class="sdpi-heading">PTZ Camera</div>
-			<div class="sdpi-item" id="your_name_required" title="This field lets you enter an IP-Adress. The little exclamation mark changes to a checkmark, if the condition is met (e.g. you entered an IP-address.).">
-				<div class="sdpi-item-label">IP-Address</div>
-				<input class="sdpi-item-value" id="ipaddress" value="" placeholder="0.0.0.0" required pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}">
-			</div>
-			<div class="sdpi-item">
-				<div class="sdpi-item-label">Preset</div>
-				<input class="sdpi-item-value" id="preset">
+			<div type="group" class="sdpi-item" id="ptzgroup">
+				<div class="sdpi-item-label">PTZ Camera Settings</div>
+				<div class="sdpi-item-group" id="ptzgroup_items">
+					<div class="sdpi-item" id="your_name_required" title="This field lets you enter an IP-Adress. The little exclamation mark changes to a checkmark, if the condition is met (e.g. you entered an IP-address.).">
+						<div class="sdpi-item-label">IP-Address</div>
+						<input class="sdpi-item-value" id="ipaddress" value="" placeholder="0.0.0.0" required pattern="\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}">
+					</div>
+					<div class="sdpi-item">
+						<div class="sdpi-item-label">Preset</div>
+						<input class="sdpi-item-value" id="preset">
+					</div>
+				</div>
 			</div>
 
-			<div class="sdpi-heading">OBS WebSocket Authentication</div>
-			<div class="sdpi-item">
-				<div class="sdpi-item-label">Host</div>
-				<input class="sdpi-item-value" id="host">
-			</div>
-			<div class="sdpi-item">
-				<div class="sdpi-item-label">Port</div>
-				<input class="sdpi-item-value" id="port">
-			</div>
-			<div class="sdpi-item">
-				<div class="sdpi-item-label">Password</div>
-				<input class="sdpi-item-value" type="password" id="password">
+			<div type="group" class="sdpi-item" id="globalgroup">
+				<div class="sdpi-item-label">OBS WebSocket Authentication</div>
+				<div class="sdpi-item-group" id="globalgroup_items">
+					<div class="sdpi-item">
+					<div class="sdpi-item-label">Host</div>
+						<input class="sdpi-item-value" id="host">
+					</div>
+					<div class="sdpi-item">
+						<div class="sdpi-item-label">Port</div>
+						<input class="sdpi-item-value" id="port">
+					</div>
+					<div class="sdpi-item">
+						<div class="sdpi-item-label">Password</div>
+						<input class="sdpi-item-value" type="password" id="password">
+					</div>
+				</div>
 			</div>
 		<div>
 		<script src="js/scene-pi.js" charset="utf-8"></script>

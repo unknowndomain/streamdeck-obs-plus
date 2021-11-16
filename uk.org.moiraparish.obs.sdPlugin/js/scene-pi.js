@@ -5,6 +5,7 @@ let currentScene
 let currentSource
 let currentPreset
 let currentIpAddress
+let currentButtonImage
 
 function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) {
 	data = JSON.parse(action)
@@ -12,6 +13,7 @@ function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) 
 	currentSource = data.payload.settings.source
 	currentPreset = data.payload.settings.preset
 	currentIpAddress = data.payload.settings.ipaddress
+	currentButtonImage = data.payload.settings.buttonimage
 	_currentPlugin = {
 		action: data.action,
 		context: uuid
@@ -40,6 +42,9 @@ function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) 
 				}
 				if(data.payload.ipaddress) {
 					updateCameraSettingsIpAddress()
+				}
+				if(data.payload.buttonimage) {
+					updateButtonImage()
 				}
 				break
 			case 'didReceiveGlobalSettings':
@@ -100,10 +105,16 @@ function createSource(source) {
 	document.getElementById('sources').appendChild(option)
 }
 
+function updateScenes() {
+	// Special handler here to pick up a new set of sources for this scene.
+	updateSettings()
+}
+
 function updateSettings() {
 	StreamDeck.setSettings(_currentPlugin.context, {
 		scene: document.getElementById('scenes').value,
 		source: document.getElementById('sources').value,
+		buttonimage: document.getElementById('buttonimage').value,
 		ipaddress: document.getElementById('ipaddress').value,
 		preset: document.getElementById('preset').value
 	})
@@ -111,10 +122,15 @@ function updateSettings() {
 	currentSource = document.getElementById('sources').value
 	currentPreset = document.getElementById('preset').value
 	currentIpAddress = document.getElementById('ipaddress').value
+	currentButtonImage = document.getElementById('buttonimage').value
 }
 
 function updateCameraSettingsIpAddress() {
 	document.getElementById('ipaddress').value = currentIpAddress
+}
+
+function updateButtonImage () {
+	document.getElementById('buttonimage').value = currentButtonImage
 }
 
 function updateCameraSettingsPreset() {
@@ -124,8 +140,9 @@ function updateCameraSettingsPreset() {
 document.getElementById('host').onchange = updateGlobalSettings
 document.getElementById('port').onchange = updateGlobalSettings
 document.getElementById('password').onchange = updateGlobalSettings
-document.getElementById('scenes').onchange = updateSettings
+document.getElementById('scenes').onchange = updateScenes
 document.getElementById('sources').onchange = updateSettings
 document.getElementById('preset').onchange = updateSettings
 document.getElementById('ipaddress').onchange = updateSettings
+document.getElementById('buttonimage').onchange = updateSettings
 

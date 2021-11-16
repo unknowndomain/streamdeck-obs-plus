@@ -22,6 +22,7 @@ class Button {
 			console.log("Processing Streamdeck Payload ......", data.payload.state, data, OBS)
 			if (data.payload.settings.scene) this.scene = data.payload.settings.scene
 			if (data.payload.settings.source) this.source = data.payload.settings.source
+			if (data.payload.settings.buttonimage) this.buttonimage = data.payload.settings.buttonimage
 			if (data.payload.settings.preset) this.preset = data.payload.settings.preset
 			if (data.payload.settings.ipaddress) this.ipaddress = data.payload.settings.ipaddress
 			if (data.payload.settings.lastpreset) this.lastpreset = data.payload.settings.lastpreset
@@ -71,6 +72,7 @@ class Button {
 			this.primed = true
 			this._setState(keyPreviewPrimed)
 			// TODO - set Movement.
+			// move_example = "http://192.168.10.41/cgi-bin/ptzctrl.cgi?ptzcmd&poscall&9"
 		} else {
 			StreamDeck.sendAlert(this.context)
 		}

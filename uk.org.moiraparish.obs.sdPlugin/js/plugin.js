@@ -30,6 +30,7 @@ let OBS = {
 	scenes: [],
 	sources: [],
 	preset: '1',
+	buttonimage: '',
 	ipaddress: '0.0.0.0',
 	studioMode: null,
 	preview: '',
@@ -133,6 +134,10 @@ function updateCameraSettings() {
 	if (currentPI) sendUpdatedCamSettingsToPI()
 }
 
+function updateButtonImage () {
+	if (currentPI) sendButtonImageToPi()
+}
+
 function obsUpdateStudioStatus() {
 	obs.send('GetStudioModeStatus').then((data) => {
 		OBS.studioMode = data['studio-mode']
@@ -157,6 +162,13 @@ function sendUpdatedSourcesToPI() {
 	StreamDeck.sendToPI(currentPI.context, sceneAction, {
 		sources: OBS.sources
 	})
+}
+
+function sendButtonImageToPi () {
+	StreamDeck.sendToPI(currentPI.context, sceneAction, {
+		buttonimage: OBS.buttonimage
+	})
+
 }
 
 function sendUpdatedCamSettingsToPI() {
@@ -218,6 +230,7 @@ function handleStreamDeckMessages(e) {
 			sendUpdatedScenesToPI()
 			sendUpdatedSourcesToPI()
 			sendUpdatedCamSettingsToPI()
+			sendButtonImageToPi()
 			break
 		case 'didReceiveGlobalSettings':
 			handleGlobalSettingsUpdate(data)
