@@ -213,6 +213,7 @@ function handleStreamDeckMessages(e) {
 		case 'titleParametersDidChange':
 		case 'didReceiveSettings':
 			if (buttons[data.context]) {
+				console.log("didReceiveSettings with context", data)
 				buttons[data.context].processStreamDeckData(data)
 			} else {
 				let type = ''

@@ -12,9 +12,6 @@ function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) 
 	console.log("Payload from streamdeck", data.payload)
 	currentScene = data.payload.settings.scene
 	currentSource = data.payload.settings.source
-	currentPreset = data.payload.settings.preset
-	currentIpAddress = data.payload.settings.ipaddress
-	currentButtonImage = data.payload.settings.buttonimage
 	_currentPlugin = {
 		action: data.action,
 		context: uuid
@@ -39,9 +36,20 @@ function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) 
 					obsSources = data.payload.sources
 					updateSourceUI()
 				}
-				if (data.payload.preset) updateCameraSettingsPreset()
-				if (data.payload.ipaddress) updateCameraSettingsIpAddress()
-				if (data.payload.buttonimage) updateButtonImage()
+				if (data.payload.preset) {
+					currentPreset = data.payload.preset
+					updateCameraSettingsPreset()
+				}
+				if (data.payload.ipaddress) {
+					currentIpAddress = data.payload.ipaddress
+					updateCameraSettingsIpAddress()
+				}
+				if (data.payload.buttonimage) {
+					console.log("Got something on buttonimage", currentButtonImage)
+					currentButtonImage = data.payload.buttonimage
+					updateButtonImage()
+				}
+				
 				break
 			case 'didReceiveGlobalSettings':
 				updateSettingsUI(data)

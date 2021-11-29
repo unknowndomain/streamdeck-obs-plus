@@ -22,7 +22,12 @@ class Button {
 			console.log("Processing Streamdeck Payload ......", data.payload.state, data, OBS)
 			if (data.payload.settings.scene) this.scene = data.payload.settings.scene
 			if (data.payload.settings.source) this.source = data.payload.settings.source
-			if (data.payload.settings.buttonimage) this.buttonimage = data.payload.settings.buttonimage
+			if (data.payload.settings.buttonimage) {
+				let button_str = ""
+				button_str = data.payload.settings.buttonimage
+				this.buttonimage = decodeURIComponent(button_str.replace(/^C:\\fakepath\\/, ''))
+				console.log("Picked up new button Image", this.buttonimage)
+			}
 			if (data.payload.settings.preset) this.preset = data.payload.settings.preset
 			if (data.payload.settings.ipaddress) this.ipaddress = data.payload.settings.ipaddress
 			if (data.payload.settings.lastpreset) this.lastpreset = data.payload.settings.lastpreset
