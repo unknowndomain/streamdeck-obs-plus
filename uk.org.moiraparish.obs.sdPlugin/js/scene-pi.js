@@ -95,6 +95,7 @@ function createScene(scene) {
 }
 
 function updateSourceUI() {
+	console.log("Doing updateSourceUI")
 	document.getElementById('sources').innerText = ''
 	createSource('')
 	obsSources.forEach((source) => {
@@ -115,18 +116,19 @@ function updateScenes() {
 }
 
 function updateSettings() {
-	StreamDeck.setSettings(_currentPlugin.context, {
-		scene: document.getElementById('scenes').value,
-		source: document.getElementById('sources').value,
-		buttonimage: document.getElementById('buttonimage').value,
-		ipaddress: document.getElementById('ipaddress').value,
-		preset: document.getElementById('preset').value
-	})
+	console.log("Starting updateSettings")
 	currentScene = document.getElementById('scenes').value
 	currentSource = document.getElementById('sources').value
 	currentPreset = document.getElementById('preset').value
 	currentIpAddress = document.getElementById('ipaddress').value
-	currentButtonImage = document.getElementById('buttonimage').value
+	currentButtonImage = decodeURIComponent(document.getElementById('buttonimage').value.replace(/^C:\\fakepath\\/, ''))
+	StreamDeck.setSettings(_currentPlugin.context, {
+		scene: currentScene,
+		source: currentSource,
+		buttonimage: currentButtonImage,
+		ipaddress: currentIpAddress,
+		preset: currentPreset
+	})
 	console.log("Finished updateSettings", currentButtonImage)
 }
 
