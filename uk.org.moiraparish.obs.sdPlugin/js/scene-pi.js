@@ -70,6 +70,7 @@ function updateSettingsUI(data) {
 }
 
 function updateGlobalSettings() {
+	console.log("Doing updateGlobalSettings")
 	let settings = {
 		host: document.getElementById('host').value,
 		port: document.getElementById('port').value
@@ -80,6 +81,7 @@ function updateGlobalSettings() {
 }
 
 function updateSceneUI() {
+	console.log("Doing updateSceneUI")
 	document.getElementById('scenes').innerText = ''
 	createScene('')
 	obsScenes.forEach((scene) => {
@@ -133,15 +135,18 @@ function updateSettings() {
 }
 
 function updateCameraSettingsIpAddress() {
+	console.log("Doing updateCameraSettingsIpAddress")
 	document.getElementById('ipaddress').value = currentIpAddress
 }
 
 function updateButtonImage () {
 	console.log("updateButtonImage", currentButtonImage)
 	document.getElementById('buttonimage').value = currentButtonImage
+	document.querySelector('.sdpi-file-info[for="buttonimage"]').textContent = currentButtonImage
 }
 
 function updateCameraSettingsPreset() {
+	console.log("Doing updateCameraSettingsPreset")
 	document.getElementById('preset').value = currentPreset
 }
 

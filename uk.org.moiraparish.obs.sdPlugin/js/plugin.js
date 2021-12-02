@@ -165,9 +165,9 @@ function sendUpdatedSourcesToPI() {
 }
 
 function sendButtonImageToPi () {
-	StreamDeck.sendToPI(currentPI.context, sceneAction, {
-		buttonimage: OBS.buttonimage
-	})
+	//StreamDeck.sendToPI(currentPI.context, sceneAction, {
+	//	buttonimage: OBS.buttonimage
+	//})
 
 }
 
