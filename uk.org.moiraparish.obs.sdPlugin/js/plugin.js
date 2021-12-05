@@ -152,29 +152,32 @@ function updatePI(e) {
 	}
 }
 
-function sendUpdatedScenesToPI() {
+function sendUpdatedScenesToPI(e) {
 	StreamDeck.sendToPI(currentPI.context, sceneAction, {
 		scenes: OBS.scenes
 	})
 }
 
-function sendUpdatedSourcesToPI() {
+function sendUpdatedSourcesToPI(e) {
 	StreamDeck.sendToPI(currentPI.context, sceneAction, {
 		sources: OBS.sources
 	})
 }
 
-function sendButtonImageToPi () {
-	//StreamDeck.sendToPI(currentPI.context, sceneAction, {
-	//	buttonimage: OBS.buttonimage
-	//})
+function sendButtonImageToPi (e) {
+	console.log("sendButtonImageToPi", e, buttons[e.context].buttonimage)
+	StreamDeck.sendToPI(currentPI.context, sceneAction, {
+		buttonimage: buttons[e.context].buttonimage
+	})
 
 }
 
-function sendUpdatedCamSettingsToPI() {
+function sendUpdatedCamSettingsToPI(e) {
+	console.log("sendButtonImageToPi", e, buttons[e.context].ipaddress)
+	console.log("sendButtonImageToPi", e, buttons[e.context].preset)
 	StreamDeck.sendToPI(currentPI.context, sceneAction, {
-		ipaddress: OBS.ipaddress,
-		preset: OBS.preset
+		ipaddress: buttons[e.context].ipaddress,
+		preset: buttons[e.context].preset
 	})
 }
 
@@ -216,10 +219,11 @@ function handleStreamDeckMessages(e) {
 				console.log("didReceiveSettings with context", data)
 				buttons[data.context].processStreamDeckData(data)
 			} else {
+				console.log("didReceiveSettings New Button", data)
 				let type = ''
 				if (data.action == sceneAction) type = 'scene'
 				buttons[data.context] = new Button(type, data)
-				console.log("didReceiveSettings", data)
+				console.log("didReceiveSettings Updating Button", data)
 				if (type == 'scene') updateButton(data.context)
 			}
 			break
@@ -228,10 +232,10 @@ function handleStreamDeckMessages(e) {
 			break
 		case 'propertyInspectorDidAppear':
 			updatePI(data)
-			sendUpdatedScenesToPI()
-			sendUpdatedSourcesToPI()
-			sendUpdatedCamSettingsToPI()
-			sendButtonImageToPi()
+			sendUpdatedScenesToPI(data)
+			sendUpdatedSourcesToPI(data)
+			sendUpdatedCamSettingsToPI(data)
+			sendButtonImageToPi(data)
 			break
 		case 'didReceiveGlobalSettings':
 			handleGlobalSettingsUpdate(data)

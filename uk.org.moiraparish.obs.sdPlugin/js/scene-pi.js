@@ -119,18 +119,19 @@ function updateScenes() {
 
 function updateSettings() {
 	console.log("Starting updateSettings")
+	StreamDeck.setSettings(_currentPlugin.context, {
+		scene: document.getElementById('scenes').value,
+		source: document.getElementById('sources').value,
+		preset: document.getElementById('preset').value,
+		ipaddress: document.getElementById('ipaddress').value,
+		buttonimage: decodeURIComponent(document.getElementById('buttonimage').value.replace(/^C:\\fakepath\\/, ''))
+	})
+	console.log("Finished updateSettings call - now reset currents")
 	currentScene = document.getElementById('scenes').value
 	currentSource = document.getElementById('sources').value
 	currentPreset = document.getElementById('preset').value
 	currentIpAddress = document.getElementById('ipaddress').value
 	currentButtonImage = decodeURIComponent(document.getElementById('buttonimage').value.replace(/^C:\\fakepath\\/, ''))
-	StreamDeck.setSettings(_currentPlugin.context, {
-		scene: currentScene,
-		source: currentSource,
-		buttonimage: currentButtonImage,
-		ipaddress: currentIpAddress,
-		preset: currentPreset
-	})
 	console.log("Finished updateSettings", currentButtonImage)
 }
 
