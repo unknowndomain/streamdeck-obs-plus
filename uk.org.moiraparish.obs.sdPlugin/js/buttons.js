@@ -173,10 +173,11 @@ class Button {
 						if (this.primed) circle_col = red
 						break
 				}
-				console.log("***** SetOnline Scene:", 
-							this.scene, "source", 
-							this.source, "state", 
-							this.state, "main:", main_box, 
+				console.log("***** SetOnline Scene:", this.scene, 
+							"source", this.source, 
+							"state", this.state, 
+							"image", this.buttonimage,
+							"main:", main_box, 
 							"lower", lower_bar, 
 							"Circle:", circle_col)
 
@@ -202,7 +203,16 @@ class Button {
 					ctx.lineTo(rectangle_width, src_rectangle_y)
 					ctx.stroke()
 				}
+				if (this.buttonimage) {
+					var imgbtn = new Image();
+					imgbtn.onload = function () {
+						ctx.drawImage(imgbtn, 0, 0);
+					}
+					console.log("Loading Button Image", this.buttonimage)
+					imgbtn.src = this.buttonimage
+				}
 				StreamDeck.setImage(this.context, canvas.toDataURL(), StreamDeck.BOTH)
+			
 				break
 			default:
 				console.log("Setting blackimage for main", this)
@@ -229,6 +239,7 @@ class Button {
 
 		// http://[Camera IP]/cgi-bin/ptzctrl.cgi?ptzcmd&poscall&[Position Number]
 
+		
 	}
 
 }

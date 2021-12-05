@@ -29,9 +29,6 @@ let buttons = {}
 let OBS = {
 	scenes: [],
 	sources: [],
-	preset: '1',
-	buttonimage: '',
-	ipaddress: '0.0.0.0',
 	studioMode: null,
 	preview: '',
 	program: '',
@@ -150,6 +147,11 @@ function updatePI(e) {
 		context: e.context,
 		action: e.action
 	}
+	sendUpdatedScenesToPI(e)
+	sendUpdatedSourcesToPI(e)
+	sendUpdatedCamSettingsToPI(e)
+	sendButtonImageToPi(e)
+//	document.querySelector('.sdpi-file-info[for="buttonimage"]').textContent = 'marina.png';
 }
 
 function sendUpdatedScenesToPI(e) {
@@ -165,7 +167,6 @@ function sendUpdatedSourcesToPI(e) {
 }
 
 function sendButtonImageToPi (e) {
-	console.log("sendButtonImageToPi", e, buttons[e.context].buttonimage)
 	StreamDeck.sendToPI(currentPI.context, sceneAction, {
 		buttonimage: buttons[e.context].buttonimage
 	})
@@ -173,8 +174,6 @@ function sendButtonImageToPi (e) {
 }
 
 function sendUpdatedCamSettingsToPI(e) {
-	console.log("sendButtonImageToPi", e, buttons[e.context].ipaddress)
-	console.log("sendButtonImageToPi", e, buttons[e.context].preset)
 	StreamDeck.sendToPI(currentPI.context, sceneAction, {
 		ipaddress: buttons[e.context].ipaddress,
 		preset: buttons[e.context].preset
@@ -232,10 +231,6 @@ function handleStreamDeckMessages(e) {
 			break
 		case 'propertyInspectorDidAppear':
 			updatePI(data)
-			sendUpdatedScenesToPI(data)
-			sendUpdatedSourcesToPI(data)
-			sendUpdatedCamSettingsToPI(data)
-			sendButtonImageToPi(data)
 			break
 		case 'didReceiveGlobalSettings':
 			handleGlobalSettingsUpdate(data)
