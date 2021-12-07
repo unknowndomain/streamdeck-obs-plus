@@ -119,12 +119,22 @@ function updateScenes() {
 
 function updateSettings() {
 	console.log("Starting updateSettings")
+	path = decodeURIComponent(document.getElementById('buttonimage').value.replace(/^C:\\fakepath\\/, ''))
+	let buttonimagecontents = []
+
+	readFile(path, {responseType: 'blob'}).then((b64) => {
+		console.log("Button File ", path, b64);
+		buttonimagecontents = b64
+	});
 	StreamDeck.setSettings(_currentPlugin.context, {
 		scene: document.getElementById('scenes').value,
 		source: document.getElementById('sources').value,
 		preset: document.getElementById('preset').value,
 		ipaddress: document.getElementById('ipaddress').value,
-		buttonimage: decodeURIComponent(document.getElementById('buttonimage').value.replace(/^C:\\fakepath\\/, ''))
+		buttonimage: decodeURIComponent(document.getElementById('buttonimage').value.replace(/^C:\\fakepath\\/, '')),
+		buttonimagecontents: buttonimagecontents
+		// Save Button Image here as an image URL so we don't need to keep loading it from file.
+		// Can we display image once we have grabbed it ?
 	})
 	console.log("Finished updateSettings call - now reset currents")
 	currentScene = document.getElementById('scenes').value
@@ -142,8 +152,8 @@ function updateCameraSettingsIpAddress() {
 
 function updateButtonImage () {
 	console.log("updateButtonImage", currentButtonImage)
-	document.getElementById('buttonimage').value = currentButtonImage
-	document.querySelector('.sdpi-file-info[for="buttonimage"]').textContent = currentButtonImage
+	document.getElementById('buttonimage').value = ""
+	//document.querySelector('.sdpi-file-info[for="buttonimage"]').textContent = currentButtonImage
 }
 
 function updateCameraSettingsPreset() {
@@ -160,3 +170,30 @@ document.getElementById('preset').onchange = updateSettings
 document.getElementById('ipaddress').onchange = updateSettings
 document.getElementById('buttonimage').onchange = updateSettings
 
+function readFile(fileName, props = {}) {
+    return new Promise(function(resolve, reject) {
+        const request = Object.assign(new XMLHttpRequest(), props || {});
+        request.open('GET', fileName, true);
+        request.onload = (e, f) => {
+            const isBlob = request.responseType == "blob" || (request.response instanceof Blob || ['[object File]', '[object Blob]'].indexOf(Object.prototype.toString.call(request.response)) !== -1);
+
+            console.log("utils.readFile", request, 'isBlob', isBlob, this);
+
+            if(isBlob) {
+                const reader = new FileReader();
+                reader.onloadend = (evt) => {
+                    resolve(evt.target.result);
+                };
+                console.log("readAsDataURL");
+                reader.readAsDataURL(request.response);
+            } else if(request.responseType == 'arraybuffer') {
+                console.log("arraybuffer");
+                resolve(request.response);
+            } else {
+                console.log("responseText");
+                resolve(request.responseText);
+            }
+        };
+        request.send();
+    });
+}

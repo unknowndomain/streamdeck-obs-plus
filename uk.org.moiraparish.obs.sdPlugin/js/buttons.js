@@ -203,16 +203,17 @@ class Button {
 					ctx.lineTo(rectangle_width, src_rectangle_y)
 					ctx.stroke()
 				}
+	
 				if (this.buttonimage) {
 					var imgbtn = new Image();
 					imgbtn.onload = function () {
 						ctx.drawImage(imgbtn, 0, 0);
 					}
 					console.log("Loading Button Image", this.buttonimage)
-					imgbtn.src = this.buttonimage
+					imgbtn.src = "file://" + this.buttonimage
 				}
 				StreamDeck.setImage(this.context, canvas.toDataURL(), StreamDeck.BOTH)
-			
+		
 				break
 			default:
 				console.log("Setting blackimage for main", this)
