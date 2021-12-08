@@ -27,6 +27,9 @@ class Button {
 				this.buttonimage = decodeURIComponent(data.payload.settings.buttonimage.replace(/^C:\\fakepath\\/, ''))
 				console.log("Picked up new button Image", this.buttonimage)
 			}
+			if (data.payload.settings.buttonimagecontents) {
+				this.buttonimagecontents = data.payload.settings.buttonimagecontents
+			}
 			if (data.payload.settings.preset) this.preset = data.payload.settings.preset
 			if (data.payload.settings.ipaddress) this.ipaddress = data.payload.settings.ipaddress
 			if (data.payload.settings.lastpreset) this.lastpreset = data.payload.settings.lastpreset
@@ -182,6 +185,12 @@ class Button {
 							"Circle:", circle_col)
 
 				ctx.clearRect(0, 0, max_rect_width, max_rect_width);
+				if (this.buttonimagecontents) {
+					console.log("Loading Button image and drawing it.")
+					var btnimg = new Image();
+					btnimg.src = this.buttonimagecontents
+					ctx.drawImage(btnimg,0,0)
+				}
 				ctx.beginPath()
 				if (circle_col != "") {
 					ctx.fillStyle = circle_col;
@@ -204,14 +213,6 @@ class Button {
 					ctx.stroke()
 				}
 	
-				if (this.buttonimage) {
-					var imgbtn = new Image();
-					imgbtn.onload = function () {
-						ctx.drawImage(imgbtn, 0, 0);
-					}
-					console.log("Loading Button Image", this.buttonimage)
-					imgbtn.src = "file://" + this.buttonimage
-				}
 				StreamDeck.setImage(this.context, canvas.toDataURL(), StreamDeck.BOTH)
 		
 				break
@@ -224,6 +225,12 @@ class Button {
 
 	setOffline() {
 		console.log("Setting Off Line Scene:", this.scene, "source", this.source, "state", this.state, this)
+		if (this.buttonimagecontents) {
+			console.log("Loading Button image and drawing it.")
+			var btnimg = new Image();
+			btnimg.src = this.buttonimagecontents
+			ctx.drawImage(btnimg,0,0)
+		}
 		ctx.clearRect(0, 0, max_rect_width, max_rect_width);
 		ctx.strokeStyle = black
 		ctx.lineWidth = rectangle_line_width

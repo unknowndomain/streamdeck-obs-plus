@@ -168,7 +168,8 @@ function sendUpdatedSourcesToPI(e) {
 
 function sendButtonImageToPi (e) {
 	StreamDeck.sendToPI(currentPI.context, sceneAction, {
-		buttonimage: buttons[e.context].buttonimage
+		buttonimage: buttons[e.context].buttonimage,
+		buttonimagecontents: buttons[e.context].buttonimagecontents
 	})
 
 }
