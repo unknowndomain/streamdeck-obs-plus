@@ -224,20 +224,20 @@ class Button {
 	}
 
 	setOffline() {
+		ctx.clearRect(0, 0, max_rect_width, max_rect_width);
 		console.log("Setting Off Line Scene:", this.scene, "source", this.source, "state", this.state, this)
+		// ctx.strokeStyle = black
+		// ctx.lineWidth = rectangle_line_width
+		// ctx.rect(rectangle_x, rectangle_y, rectangle_width, rectangle_height)
+		// ctx.stroke()
+		// ctx.fillStyle = black
+		// ctx.fillRect(rectangle_x, src_rectangle_y, rectangle_width, rectangle_line_width / 2)
 		if (this.buttonimagecontents) {
 			console.log("Loading Button image and drawing it.")
 			var btnimg = new Image();
 			btnimg.src = this.buttonimagecontents
 			ctx.drawImage(btnimg,0,0)
 		}
-		ctx.clearRect(0, 0, max_rect_width, max_rect_width);
-		ctx.strokeStyle = black
-		ctx.lineWidth = rectangle_line_width
-		ctx.rect(rectangle_x, rectangle_y, rectangle_width, rectangle_height)
-		ctx.stroke()
-		ctx.fillStyle = black
-		ctx.fillRect(rectangle_x, src_rectangle_y, rectangle_width, rectangle_line_width / 2)
 		StreamDeck.setImage(this.context, canvas.toDataURL(), StreamDeck.BOTH)
 	}
 
@@ -246,7 +246,6 @@ class Button {
 		console.log('Setting Camera Preset:', 'hhh', 'hhhh')
 
 		// http://[Camera IP]/cgi-bin/ptzctrl.cgi?ptzcmd&poscall&[Position Number]
-
 		
 	}
 
