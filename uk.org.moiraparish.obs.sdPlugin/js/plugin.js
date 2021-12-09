@@ -131,10 +131,6 @@ function updateCameraSettings() {
 	if (currentPI) sendUpdatedCamSettingsToPI()
 }
 
-function updateButtonImage () {
-	if (currentPI) sendButtonImageToPi()
-}
-
 function obsUpdateStudioStatus() {
 	obs.send('GetStudioModeStatus').then((data) => {
 		OBS.studioMode = data['studio-mode']

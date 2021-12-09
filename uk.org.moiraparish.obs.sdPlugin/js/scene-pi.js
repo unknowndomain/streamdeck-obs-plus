@@ -7,6 +7,7 @@ let currentPreset
 let currentIpAddress
 let currentButtonImage
 let currentButtonImageContents = []
+let currentContext
 
 function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) {
 	data = JSON.parse(action)
@@ -28,6 +29,7 @@ function connectElgatoStreamDeckSocket(port, uuid, registerEvent, info, action) 
 		switch(data.event) {
 			case 'sendToPropertyInspector':
 				console.log("And its the PROPERTY INSPECTOR", data)
+				currentContext = data.context
 				if (data.payload.settings) updateSettingsUI(data)
 				if (data.payload.scenes) {
 					obsScenes = data.payload.scenes
@@ -121,30 +123,37 @@ function updateScenes() {
 
 function updateSettings() {
 	console.log("Starting updateSettings")
+
+	StreamDeck.setSettings(_currentPlugin.context, {
+		scene: document.getElementById('scenes').value,
+		source: document.getElementById('sources').value,
+		preset: document.getElementById('preset').value,
+		ipaddress: document.getElementById('ipaddress').value,
+		buttonimage: decodeURIComponent(document.getElementById('buttonimage').value.replace(/^C:\\fakepath\\/, '')),
+		buttonimagecontents: currentButtonImageContents
+		// Save Button Image here as an image URL so we don't need to keep loading it from file.
+		// Can we display image once we have grabbed it ?
+	})
+	console.log("Finished updateSettings call - now reset currents")
+	currentScene = document.getElementById('scenes').value
+	currentSource = document.getElementById('sources').value
+	currentPreset = document.getElementById('preset').value
+	currentIpAddress = document.getElementById('ipaddress').value
+	currentButtonImage = decodeURIComponent(document.getElementById('buttonimage').value.replace(/^C:\\fakepath\\/, ''))
+	console.log("Finished updateSettings", currentButtonImage)
+}
+
+function updateButtonSettings () {
+	console.log("Starting updateButtonSettings")
 	path = decodeURIComponent(document.getElementById('buttonimage').value.replace(/^C:\\fakepath\\/, ''))
 
 	readFile(path, {responseType: 'blob'}).then((b64) => {
 		console.log("Button File ", path, b64);
 		currentButtonImageContents = b64
 		console.log("currentButtonImageContents", currentButtonImageContents)
-		StreamDeck.setSettings(_currentPlugin.context, {
-			scene: document.getElementById('scenes').value,
-			source: document.getElementById('sources').value,
-			preset: document.getElementById('preset').value,
-			ipaddress: document.getElementById('ipaddress').value,
-			buttonimage: decodeURIComponent(document.getElementById('buttonimage').value.replace(/^C:\\fakepath\\/, '')),
-			buttonimagecontents: currentButtonImageContents
-			// Save Button Image here as an image URL so we don't need to keep loading it from file.
-			// Can we display image once we have grabbed it ?
-		})
-		console.log("Finished updateSettings call - now reset currents")
-		currentScene = document.getElementById('scenes').value
-		currentSource = document.getElementById('sources').value
-		currentPreset = document.getElementById('preset').value
-		currentIpAddress = document.getElementById('ipaddress').value
-		currentButtonImage = decodeURIComponent(document.getElementById('buttonimage').value.replace(/^C:\\fakepath\\/, ''))
-		console.log("Finished updateSettings", currentButtonImage)
-	});
+		updateSettings()
+		// updateButton(currentContext)
+	})
 }
 
 function updateCameraSettingsIpAddress() {
@@ -170,7 +179,7 @@ document.getElementById('scenes').onchange = updateScenes
 document.getElementById('sources').onchange = updateSettings
 document.getElementById('preset').onchange = updateSettings
 document.getElementById('ipaddress').onchange = updateSettings
-document.getElementById('buttonimage').onchange = updateSettings
+document.getElementById('buttonimage').onchange = updateButtonSettings
 
 function readFile(fileName, props = {}) {
     return new Promise(function(resolve, reject) {

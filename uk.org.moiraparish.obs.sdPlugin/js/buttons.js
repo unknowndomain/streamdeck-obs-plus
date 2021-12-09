@@ -34,6 +34,14 @@ class Button {
 			if (data.payload.settings.ipaddress) this.ipaddress = data.payload.settings.ipaddress
 			if (data.payload.settings.lastpreset) this.lastpreset = data.payload.settings.lastpreset
 			console.log ("Payload Processing ........:", this.scene, "source", this.source, "state", this.state)
+			switch (this.state) {
+				case keyInactive:
+					this.setOffline()
+					break;
+				default:
+					this.setOnline()
+					break;
+			}
 			this._updateTitle()
 		}
 	}
@@ -148,7 +156,7 @@ class Button {
 	}
 
 	setOnline() {
-		console.log("setOnline Scene:", this.scene, "source", this.source, "state", this.state, this)
+		console.log("setOnline Scene:", this.scene, "type", this.type, "source", this.source, "state", this.state, this)
 
 		switch (this.type) {
 			case 'scene':
@@ -212,9 +220,8 @@ class Button {
 					ctx.lineTo(rectangle_width, src_rectangle_y)
 					ctx.stroke()
 				}
-	
+				console.log("Sending image to streamdeck")
 				StreamDeck.setImage(this.context, canvas.toDataURL(), StreamDeck.BOTH)
-		
 				break
 			default:
 				console.log("Setting blackimage for main", this)
@@ -226,12 +233,6 @@ class Button {
 	setOffline() {
 		ctx.clearRect(0, 0, max_rect_width, max_rect_width);
 		console.log("Setting Off Line Scene:", this.scene, "source", this.source, "state", this.state, this)
-		// ctx.strokeStyle = black
-		// ctx.lineWidth = rectangle_line_width
-		// ctx.rect(rectangle_x, rectangle_y, rectangle_width, rectangle_height)
-		// ctx.stroke()
-		// ctx.fillStyle = black
-		// ctx.fillRect(rectangle_x, src_rectangle_y, rectangle_width, rectangle_line_width / 2)
 		if (this.buttonimagecontents) {
 			console.log("Loading Button image and drawing it.")
 			var btnimg = new Image();
