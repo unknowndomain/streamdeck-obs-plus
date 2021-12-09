@@ -64,10 +64,12 @@ class Button {
 						this._PreviewPrimed()
 						break
 					case keySourceLive:
-						StreamDeck.sendAlert(this.context)
+						//StreamDeck.sendAlert(this.context)
+						console.log("Ignoring")
 						break
 					case keyLiveOutput:
-						StreamDeck.sendAlert(this.context)
+						//StreamDeck.sendAlert(this.context)
+						console.log("Ignoring")
 						break
 				}
 		}
@@ -168,7 +170,7 @@ class Button {
 						break
 					case keyPreviewPrimed:
 						main_box = green
-						circle_col = green
+						circle_col = yellow
 						break
 					case keyPreviewNotPrimed:
 						main_box = green
@@ -181,7 +183,7 @@ class Button {
 						break
 					case keyLiveOutput:
 						main_box = red
-						if (this.primed) circle_col = red
+						if (this.primed) circle_col = yellow
 						break
 				}
 				console.log("***** SetOnline Scene:", this.scene, 
@@ -201,19 +203,22 @@ class Button {
 				}
 				ctx.beginPath()
 				if (circle_col != "") {
+					ctx.beginPath();
 					ctx.fillStyle = circle_col;
-					ctx.strokeStyle = circle_col
+					//ctx.strokeStyle = circle_col
 					ctx.beginPath();
 					ctx.arc(primed_x, primed_y, primed_radius, 0, 2 * Math.PI);
 					ctx.fill();
 				}
 				if (main_box != "") {
+					ctx.beginPath();
 					ctx.strokeStyle = main_box
 					ctx.lineWidth = rectangle_line_width;
 					ctx.rect(rectangle_x, rectangle_y, rectangle_width, rectangle_height)
 					ctx.stroke()
 				}
 				if (lower_bar != "") {
+					ctx.beginPath();
 					ctx.strokeStyle = lower_bar
 					ctx.lineWidth = rectangle_line_width;
 					ctx.moveTo(rectangle_x, src_rectangle_y)
@@ -231,8 +236,8 @@ class Button {
 	}
 
 	setOffline() {
-		ctx.clearRect(0, 0, max_rect_width, max_rect_width);
 		console.log("Setting Off Line Scene:", this.scene, "source", this.source, "state", this.state, this)
+		ctx.clearRect(0, 0, max_rect_width, max_rect_width);
 		if (this.buttonimagecontents) {
 			console.log("Loading Button image and drawing it.")
 			var btnimg = new Image();
