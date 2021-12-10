@@ -88,8 +88,7 @@ class Button {
 			this.primed = true
 			this.primed_send = true
 			this._setState(keyPreviewPrimed)
-			// TODO - set Movement.
-			// move_example = "http://192.168.10.41/cgi-bin/ptzctrl.cgi?ptzcmd&poscall&9"
+			this._setCameraPreset()
 		} else {
 			StreamDeck.sendAlert(this.context)
 		}
@@ -249,10 +248,16 @@ class Button {
 
 	_setCameraPreset() {
 		// Camera Preset actions here.
-		console.log('Setting Camera Preset:', 'hhh', 'hhhh')
+		console.log('Setting Camera Preset:', this.ipaddress, this.preset)
 
-		// http://[Camera IP]/cgi-bin/ptzctrl.cgi?ptzcmd&poscall&[Position Number]
+		let camera_ptz_cmd = "http://" + this.ipaddress + "/cgi-bin/ptzctrl.cgi?ptzcmd&poscall&" + this.preset
+		console.log("Camera PTZ Command:", camera_ptz_cmd)
+
+		let Http = new XMLHttpRequest();
+		Http.open("GET", camera_ptz_cmd);
+		Http.send();
 		
+		// http://[Camera IP]/cgi-bin/ptzctrl.cgi?ptzcmd&poscall&[Position Number]
 	}
 
 }
