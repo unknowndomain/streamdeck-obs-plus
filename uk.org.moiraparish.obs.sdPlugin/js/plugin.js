@@ -207,7 +207,8 @@ function handleStreamDeckMessages(e) {
 			console.log("Received Key Up", data)
 			// Need button repaint to pick up prime changes.
 			// But this is too enthusiastic.
-			// if (buttons[data.context].primed == true) updateButtons()
+			if (buttons[data.context].primed == true && buttons[data.context].primed_send == true) updateButtons()
+			buttons[data.context].primed_send = false
 			break;
 		case 'willAppear':
 		case 'titleParametersDidChange':

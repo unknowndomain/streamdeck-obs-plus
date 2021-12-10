@@ -14,6 +14,7 @@ class Button {
 		this.type = type
 		this.state = keyInactive
 		this.primed = false
+		this.primed_send = false
 		this.processStreamDeckData(data)
 	}
 
@@ -87,6 +88,7 @@ class Button {
 			}
 			clearPrimeButtons()
 			this.primed = true
+			this.primed_send = true
 			this._setState(keyPreviewPrimed)
 			// TODO - set Movement.
 			// move_example = "http://192.168.10.41/cgi-bin/ptzctrl.cgi?ptzcmd&poscall&9"
