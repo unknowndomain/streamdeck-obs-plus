@@ -65,12 +65,10 @@ class Button {
 						this._PreviewPrimed()
 						break
 					case keySourceLive:
-						//StreamDeck.sendAlert(this.context)
-						console.log("Ignoring")
+						StreamDeck.sendAlert(this.context)
 						break
 					case keyLiveOutput:
-						//StreamDeck.sendAlert(this.context)
-						console.log("Ignoring")
+						StreamDeck.sendAlert(this.context)
 						break
 				}
 		}
