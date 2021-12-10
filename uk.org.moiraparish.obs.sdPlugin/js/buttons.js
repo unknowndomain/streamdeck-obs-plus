@@ -172,7 +172,7 @@ class Button {
 						break
 					case keyPreviewPrimed:
 						main_box = green
-						circle_col = yellow
+						circle_col = green
 						break
 					case keyPreviewNotPrimed:
 						main_box = green
@@ -185,7 +185,7 @@ class Button {
 						break
 					case keyLiveOutput:
 						main_box = red
-						if (this.primed) circle_col = yellow
+						if (this.primed) circle_col = red
 						break
 				}
 				console.log("***** SetOnline Scene:", this.scene, 
@@ -222,9 +222,9 @@ class Button {
 				if (lower_bar != "") {
 					ctx.beginPath();
 					ctx.strokeStyle = lower_bar
-					ctx.lineWidth = rectangle_line_width;
-					ctx.moveTo(rectangle_x, src_rectangle_y)
-					ctx.lineTo(rectangle_width, src_rectangle_y)
+					ctx.lineWidth = rectangle_line_width*2;
+					ctx.moveTo(0, src_rectangle_y)
+					ctx.lineTo(rectangle_width+rectangle_line_width, src_rectangle_y)
 					ctx.stroke()
 				}
 				console.log("Sending image to streamdeck")
